@@ -1,0 +1,40 @@
+<!--设置背景图片-->
+<template>
+    <view class="T-background" :class="className">
+        <image :src="src"></image>
+        <view><slot></slot></view>
+    </view>
+</template>
+
+<script>
+    export default {
+        name: "t-bg",
+        data(){
+            return{
+
+            }
+        },
+        props:{
+            src:String,
+            className:String
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    .T-background{
+        position: relative;
+        image{
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        view{
+            position: relative;
+            z-index: 10;
+        }
+    }
+</style>

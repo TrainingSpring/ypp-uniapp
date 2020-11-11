@@ -1,0 +1,70 @@
+@font-face {
+  font-family: 'iconfont';  /* project id 2189414 */
+  src: url('https://at.alicdn.com/t/font_2189414_iu5xfsfqc0g.eot');
+  src: url('https://at.alicdn.com/t/font_2189414_iu5xfsfqc0g.eot?#iefix') format('embedded-opentype'),
+  url('https://at.alicdn.com/t/font_2189414_iu5xfsfqc0g.woff2') format('woff2'),
+  url('https://at.alicdn.com/t/font_2189414_iu5xfsfqc0g.woff') format('woff'),
+  url('https://at.alicdn.com/t/font_2189414_iu5xfsfqc0g.ttf') format('truetype'),
+  url('https://at.alicdn.com/t/font_2189414_iu5xfsfqc0g.svg#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-icon-test:before {
+  content: "\e667";
+}
+
+.icon-xiasanjiaoxing:before {
+  content: "\e642";
+}
+
+.icon-yousanjiaoxing:before {
+  content: "\e645";
+}
+
+.icon-tuijian:before {
+  content: "\e63f";
+}
+
+.icon-zuixin:before {
+  content: "\e638";
+}
+
+.icon-biaoqiankuozhan_tuijian-121:before {
+  content: "\eaf1";
+}
+
+.icon-new:before {
+  content: "\e603";
+}
+
+.icon-xiaoxi:before {
+  content: "\e644";
+}
+
+.icon-shouye:before {
+  content: "\e606";
+}
+
+.icon-wode:before {
+  content: "\e6c9";
+}
+
+.icon-fuwu:before {
+  content: "\e651";
+}
+
+.icon-touxiang:before {
+  content: "\e614";
+}
+
+.icon-fanhui1:before {
+  content: "\e6b0";
+}
+
