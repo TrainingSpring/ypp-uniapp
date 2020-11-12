@@ -1,6 +1,6 @@
 <!--设置背景图片-->
 <template>
-    <view class="T-background" :class="className">
+    <view class="T-background">
         <image :src="src"></image>
         <view><slot></slot></view>
     </view>
@@ -15,8 +15,7 @@
             }
         },
         props:{
-            src:String,
-            className:String
+            src:String
         }
     }
 </script>

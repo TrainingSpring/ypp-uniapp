@@ -1,11 +1,11 @@
 <template>
     <view class="hintBox" :style="{display:show?'block':'none'}">
         <view class="hint" :style="{width,height, margin: 'calc((100vh - '+ height+')/2) auto'}">
-            <view class="icon" :style="{width:iconWidth,height:iconHeight,left:'calc((100% - '+iconHeight+')/2)'}">
+            <view class="icon" :style="{width:iconWidth,height:iconHeight,left:'calc((100% - '+iconHeight+')/2)',top:'calc(-'+iconHeight+' / 2)'}">
                 <image :src="icon"></image>
             </view>
-            <view class="text"><slot v-if="!!text"></slot><text v-if="text">{{text}}</text></view>
-            <view class="btn" @tap.prevent="tap(1)">{{confirm}}</view>
+            <view class="text" :style="{paddingTop:'calc('+iconHeight+' / 2 + 10upx)'}"><slot v-if="!content"></slot><view v-if="content" v-html="content"></view></view>
+            <view class="btn" :class="button!=='fail'?'btn-success':'btn-fail'" @tap.prevent="tap(1)" :style="{left:'10%',bottom:type!==1?'60upx':'80upx'}">{{confirm}}</view>
             <view class="btn_cancel" v-if="type!==0" @tap.prevent="tap(0)">{{cancel}}</view>
         </view>
     </view>
@@ -33,7 +33,7 @@
                     return "../../static/hint/icon.png"
                 }
             },
-            text:String,  // 显示文字,或者使用标签
+            content:String,  // 显示文字,或者使用标签
             confirm:{  // 确认按钮文字
                 type:String,
                 default:()=>{
@@ -69,11 +69,18 @@
                 default(){
                     return "89px"
                 }
+            },
+            button:{
+                type:String,
+                default(){
+                    return "success"
+                }
             }
         },
         methods:{
             tap(val){
                 console.log(val)
+                this.$emit("onTap",val)
             }
         }
     }
@@ -99,28 +106,33 @@
             text-align: center;
             .icon{
                 position: absolute;
-                top: -20.5%;
-                left: 19.28%;
+                // top: -20.5%;
+                // left: 19.28%;
             }
             .text{
-                padding-top: 152upx;
                 font-size: 32upx;
             }
             .btn{
                 position: absolute;
                 bottom: 60upx;
-                width: 266upx;
+                width: 80%;
                 line-height: 100upx;
-                background-color:#4BB2FF ;
                 border-radius: 100upx;
-                left: 67upx;
-                box-shadow: 8upx 8upx 44upx 0px #4BB2FF;
+                /*left: 67upx;*/
                 color: white;
                 font-size: 32upx;
             }
+            .btn-success{
+                box-shadow: 8upx 8upx 44upx 0px #4BB2FF;
+                background-color:#4BB2FF ;
+            }
+            .btn-fail{
+                box-shadow: 8upx 8upx 44upx 0px #eeeeee;
+                background-color:#cccccc ;
+            }
             .btn_cancel{
                 position: absolute;
-                bottom: 10upx;
+                bottom: 20upx;
                 width: 100%;
                 text-align: center;
                 color: #999;

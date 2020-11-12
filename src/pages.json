@@ -1,12 +1,48 @@
 {
 	"pages": [
 		{
+			"path": "pages/taskInfo/index",
+			"style": {
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTitleText": "任务详情",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/showBind/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "账号绑定",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/mine/index",
 			"style": {
 				"backgroundColor": "#ffffff",
 				"navigationBarTitleText": "个人中心",
 				"navigationBarBackgroundColor": "#F2F2F2",
 				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/phone/index",
+			"style": {
+				"navigationBarTitleText": "绑定手机号码",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/realName/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "实名认证",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
 			}
 		},
 		{
@@ -66,14 +102,6 @@
 			"style": {
 				"navigationBarTitleText": "首页",
 				"backgroundColor": "#FFFFFF"
-			}
-		},
-		{
-			"path": "pages/phone/index",
-			"style": {
-				"navigationBarTitleText": "绑定手机号码",
-				"navigationBarBackgroundColor": "#F2F2F2",
-				"backgroundColor": "#F2F2F2"
 			}
 		}
 	],
