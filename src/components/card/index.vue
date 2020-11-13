@@ -1,6 +1,6 @@
 <template>
     <view class="t-card">
-        <view v-if="title!=='' || !!title" class="title">{{title}}</view>
+        <view v-if="title!=='' || !!title" class="title" :style="{borderBottom:border?'1px solid #eee':'none'}">{{title}}</view>
         <slot></slot>
     </view>
 </template>
@@ -9,7 +9,13 @@
     export default {
         name: "t-card",
         props:{
-            title:String
+            title:String,
+            border:{
+                type:Boolean,
+                default(){
+                    return false
+                }
+            }
         }
     }
 </script>

@@ -44,15 +44,15 @@
         </view>
         <!--        menu        -->
         <view class="menu">
-            <view class="menu-item">
+            <view class="menu-item" @tap="toNewPage('../try/index')">
                 <view class="icon"><image src="../../static/home/menu1.png"></image></view>
                 <view class="text">新用户专享</view>
             </view>
-            <view class="menu-item">
+            <view class="menu-item" @tap="toNewPage('../myTry/index')">
                 <view class="icon"><image src="../../static/home/menu2.png"></image></view>
                 <view class="text">我的试玩</view>
             </view>
-            <view class="menu-item">
+            <view class="menu-item" @tap="toNewPage('../tryPrediction/index')">
                 <view class="icon"><image src="../../static/home/menu3.png"></image></view>
                 <view class="text">试玩计划</view>
             </view>
@@ -191,7 +191,20 @@
 
 		},
 		methods: {
-
+            toNewPage:function (e: any) {
+                console.log(e)
+                uni.switchTab({
+                    url:e,
+                    success:function (result) {
+                        console.log("res: " + result)
+                    },
+                    fail:function (err) {
+                        uni.navigateTo({
+                            url:e
+                        })
+                    }
+                })
+            }
 		}
 	});
 </script>

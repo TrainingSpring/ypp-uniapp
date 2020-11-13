@@ -1,6 +1,40 @@
 {
 	"pages": [
 		{
+			"path": "pages/guide/index",
+			"style": {
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTitleText": "游拼拼"
+			}
+		},
+		{
+			"path": "pages/withdraw/index",
+			"style": {
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTitleText": "余额提现",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/balance/index",
+			"style": {
+				"backgroundColor": "white",
+				"navigationBarTitleText": "余额详情",
+				"navigationBarBackgroundColor": "#F2F2F2",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/message/index",
+			"style": {
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTitleText": "消息中心",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/taskInfo/index",
 			"style": {
 				"backgroundColor": "#F2F2F2",
@@ -91,13 +125,6 @@
 			}
 		},
 		{
-			"path": "pages/guide/index",
-			"style": {
-				"navigationBarBackgroundColor": "#ffffff",
-				"navigationBarTitleText": "游拼拼"
-			}
-		},
-		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页",
@@ -127,6 +154,12 @@
 				"text": "试玩中心",
 				"iconPath": "static/tabBar/server.png",
 				"selectedIconPath": "static/tabBar/selected_server.png"
+			},
+			{
+				"pagePath": "pages/message/index",
+				"text": "消息中心",
+				"iconPath": "static/tabBar/msg.png",
+				"selectedIconPath": "static/tabBar/selected_msg.png"
 			},
 			{
 				"pagePath": "pages/mine/index",

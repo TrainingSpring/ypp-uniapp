@@ -22,15 +22,21 @@
                 <view class="earning">
                     <view class="earning-item">
                         <view class="money">{{userInfo.earning[0]}}</view>
-                        <view class="text">今日收益</view>
+                        <view class="text">今日收益(元)</view>
                     </view>
                     <view class="earning-item">
                         <view class="money">{{userInfo.earning[1]}}</view>
-                        <view class="text">总收益</view>
+                        <view class="text">总收益(元)</view>
                     </view>
                     <view class="earning-item">
                         <view class="money">{{userInfo.earning[2]}}</view>
-                        <view class="text">收益余额</view>
+                        <view class="text">总试玩(个)</view>
+                        <view class="question">
+                            <view class="iconfont icon-yiwen" @tap="onHint">
+                                <bgi class="hint" src="../../static/mine/hint.png" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
+                            </view>
+
+                        </view>
                     </view>
                 </view>
             <view class="menu">
@@ -117,6 +123,7 @@
 
 <script>
     import tools from "../../components/plugin/tool"
+    import bgi from "../../components/bg/index.vue"
     export default {
         name: "index",
         data(){
@@ -131,7 +138,8 @@
                         0.9
                     ]
                 },
-                msg:false
+                msg:false,
+                hint:false
             }
         },
         methods:{
@@ -156,7 +164,16 @@
                     }
                 });
 
+            },
+            /**
+             * 打开/关闭 试玩提示
+             */
+            onHint:function () {
+                this.hint = !this.hint;
             }
+        },
+        components:{
+            bgi
         }
     }
 </script>
@@ -165,6 +182,7 @@
     @import "../../components/plugin/colorui/animation.css";
     @import "../../components/plugin/colorui/icon.css";
     @import "../../components/plugin/colorui/main.css";
+    @import "../../static/css/iconfont.css";
     image{
         width: 100%;
         height: 100%;
@@ -260,8 +278,24 @@
                     font-size: 24upx;
                     color: #B3DAFF;
                 }
-
                 position: relative;
+                .question{
+                    position: absolute;
+                    top: -10upx;
+                    right: 20%;
+                    font-size: 12px;
+                    .hint{
+                        width: 418upx;
+                        font-size: 12px;
+                        padding: 4upx 0;
+                        text-align: center;
+                        color: #95C9FC;
+                        position: absolute;
+                        right: 30upx;
+                        display: none;
+                        top: -32upx;
+                    }
+                }
             }
             .earning-item::after{
                 content: ' ';

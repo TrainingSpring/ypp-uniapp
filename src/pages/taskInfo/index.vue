@@ -84,7 +84,7 @@
                 </view>
             </view>
         </card>
-        <div class="space"></div>
+        <view class="space"></view>
         <view class="page-bottom">
             <view class="server">
                 <view class="icon">
@@ -149,41 +149,32 @@
                     <bgi class="title" src="../../static/taskInfo/title_bg.png"><text>请填写游戏信息</text></bgi>
                 </view>
                 <view class="cu-form-group">
-                    <div id="bind_info">
-                        <div class="title">请填写游戏信息</div>
-                        <div class="form">
-                            <div class="row">
-                                <div class="after">
+                    <view id="bind_info">
+                        <view class="form">
+                            <view class="row">
+                                <view class="after">
                                     <i class="iconfont icon-ContextPhone"></i>
                                     <input type="text" id="account" value="56454159" placeholder="请输入游戏账号">
-                                </div>
+                                </view>
 
-
-                            </div>
-                            <div class="row">
-                                <div class="after">
-                                    <i class="iconfont icon-fuwuqi"></i>
-                                    <input type="text" id="server" value="焚火s1" placeholder="请输入游戏大区">
-                                </div>
-
-                                <div class="btn get-info">点击查询</div>
-                            </div>
-                            <div class="row">
+                                <bgi class="get-info btn" src="../../static/task/border.png"><text>点击查询</text></bgi>
+                            </view>
+                            <view class="row">
                                 <i class="iconfont icon-role"></i>
-                                <div class="role">请选择游戏角色</div>
-                                <!-- <div class="btn select-role">选择</div> -->
-                            </div>
-                            <div class="row">
+                                <view class="role">请选择游戏角色</view>
+                                <!-- <view class="btn select-role">选择</view> -->
+                            </view>
+                            <view class="row">
                                 <i class="iconfont icon-dengji"></i>
-                                <div class="level text">游戏等级: <span></span></div>
-                            </div>
-                            <!-- <div class="row">
+                                <view class="level text">游戏等级: <span></span></view>
+                            </view>
+                             <view class="row">
                                 <i class="iconfont icon-jine"></i>
-                                <div class="money text">充值金额:<span></span></div>
-                            </div> -->
-                        </div>
-                        <div id="bind">立即绑定</div>
-                    </div>
+                                <view class="money text">充值金额:<span></span></view>
+                            </view>
+                        </view>
+                        <view id="bind">立即绑定</view>
+                    </view>
                 </view>
             </view>
         </view>
@@ -368,6 +359,7 @@
     @import "../../components/plugin/colorui/main.css";
     @import "../../components/plugin/colorui/animation.css";
     @import "../../static/css/iconfont.css";
+    @import "../../static/css/iconfont_1.css";
     image{
         width: 100%;
         height: 100%;
@@ -652,6 +644,106 @@
             .li{
                 margin-bottom: 16upx;
             }
+        }
+        .bind-account-info{
+            .top{
+                font-size: 28upx;
+                padding: 20upx 0;
+                .title{
+                    color: #4BB2FF;
+                    width:50%;
+                    margin: 0 auto;
+                }
+            }
+            #bind_info {
+                width: 90%;
+                margin: 0 auto;
+            }
+            #bind_info .form .row{
+                font-size: 23.72upx;
+                line-height: 62upx;
+                height: 62upx;
+                margin-top: 25upx;
+                position: relative;
+                text-align: left;
+                .get-info{
+                    width: 140upx;
+                    height: 48upx;
+                }
+            }
+            #bind_info .form .row .after{
+                display: block;
+                width: calc(100% - 160upx);
+                height: 63upx;
+                border-radius: 32.1upx;
+                background-color: #F5F5F5;
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 0;
+            }
+            #bind_info .form .row i{
+                font-size: 24upx;
+                color: #ccc;
+                margin-left: 34upx;
+                float: left;
+            }
+            #bind_info .form .row input{
+                width: 200upx;
+                float: left;
+                padding: 10upx;
+                height: 100%;
+                border: none;
+                font-size: 12px;
+                background-color: rgba(0,0,0,0);
+            }
+            #bind_info .form .row .btn{
+                float: right;
+                color: #4BB2FF;
+                text-align: center;
+                line-height: 48upx;
+                font-size: 20upx;
+                margin-top:10upx;
+                /*background-image: url(../../images/modify/task-info/border.png);*/
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+            }
+            #bind_info .form .row .btn.select-role{
+                /*background-image: url(../../images/modify/task-info/select.png);*/
+                text-align: left;
+                text-indent: 20upx;
+            }
+            #bind_info .form .row .role{
+                border: 1px solid #eee;
+                width: calc(100% - 72upx);
+                height: 80%;
+                text-indent: 1em;
+                margin-top: 6.3upx;
+                line-height: 50.4upx;
+                border-radius: 5px;
+            }
+            #bind_info .form .row .role::after{
+                content: "\25BC";
+                float: right;
+                margin-right: 10upx;
+            }
+            #bind_info .form .row .role,#bind_info .form .row .text{
+                display: inline-block;
+                margin-left: 15upx;
+                color:#ccc;
+            }
+            #bind{
+                width: 100%;
+                height: 73upx;
+                line-height: 73upx;
+                color:#fff;
+                font-size: 12px;
+                text-align: center;
+                background-color: #4BB2FF;
+                border-radius: 32.5upx;
+                margin: 20upx auto;
+            }
+
         }
     }
 </style>
