@@ -1,6 +1,6 @@
 <!--游戏列表项-->
 <template>
-    <view class="t-game-item" :class="itemClass">
+    <view class="t-game-item" :class="itemClass" @tap="clickThis(data)">
         <view class="logo" :style="{'background':'url('+data.icon+') no-repeat',backgroundSize:'cover'}">
 
             <view v-if="data.newGame" class="new">
@@ -32,13 +32,13 @@
     export default {
         name: "index",
         props:{
-            data:{
+            data:{   // 数据
                 type:Object,
                 default(){
                     return {}
                 }
             },
-            btnState:{
+            btnState:{ // 按钮状态
               type:Number,
                 default(){
                   return 0
@@ -54,6 +54,11 @@
         },
         components:{
             bgi
+        },
+        methods:{
+            clickThis(data){
+                this.$emit("ontap",data);
+            }
         }
     }
 </script>

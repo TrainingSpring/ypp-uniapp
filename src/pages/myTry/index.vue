@@ -5,11 +5,12 @@
             <search-box style="font-size: 12px;" v-model="keyword" placeholder="搜索你感兴趣的" button="inside" :mode="2"></search-box>
         </view>
         <wuc-tab :tabList="tab.tabList" :tabCur="tab.cur" textFlex class="tab" @change="tabChange"></wuc-tab>
-        <t-radio class="sort" padding="7.5px" :data="sort"></t-radio>
+        <t-radio class="sort" padding="7.5px" style="border-bottom: 1px solid #eeeeee;" margin="0 10px 0 0" :data="sort" ></t-radio>
         <swiper class="swiper" :current="swiper">
             <swiper-item v-for="item in tab.tabList">
                 <scroll-view>
-                    <t-item v-for="i,index in item.data" :btn-state="i.state" :btn-text="i.state===0?'继续试玩':i.state===1?'提交任务':'已提交'" :data="i"></t-item>
+<!--                    <t-item v-for="i,index in item.data" :btn-state="i.state" :btn-text="i.state===0?'继续试玩':i.state===1?'提交任务':'已提交'" :data="i"></t-item>-->
+                    <t-item v-for="i,index in item.data"  btn-text="继续试玩" :data="i" @ontap="showDetail(item)"></t-item>
                 </scroll-view>
                 <view v-if="item.data"></view>
             </swiper-item>
@@ -120,6 +121,16 @@
             },
             hideModal(){
                 this.modal.show = false;
+            },
+            /**
+             * 推荐类目点击
+             * @data 点击的内容项
+             */
+            showDetail(data){
+                uni.navigateTo({
+                    url:"../taskInfo/index",
+                    events:data
+                });
             }
         },
         components:{

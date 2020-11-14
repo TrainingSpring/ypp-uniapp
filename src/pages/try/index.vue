@@ -9,7 +9,7 @@
         <swiper class="swiper" :current="swiper">
             <swiper-item v-for="item in tab.tabList">
                 <scroll-view>
-                    <t-item v-for="i,index in item.data" :data="i"></t-item>
+                    <t-item v-for="i,index in item.data" :data="i" @ontap="showDetail(item)"></t-item>
                 </scroll-view>
                 <view v-if="item.data"></view>
             </swiper-item>
@@ -101,6 +101,16 @@
             tabChange(index){
                 this.tab.cur = index;
                 this.swiper = index;
+            },
+            /**
+             * 推荐类目点击
+             * @data 点击的内容项
+             */
+            showDetail(data){
+                uni.navigateTo({
+                    url:"../taskInfo/index",
+                    events:data
+                });
             }
         },
         components:{

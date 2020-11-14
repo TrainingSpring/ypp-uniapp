@@ -62,10 +62,10 @@
         <view class="today">
             <view class="top">
                 <view class="title"><text></text> 今日推荐</view>
-                <view class="more">查看更多</view>
+                <view class="more" @tap="showMore">查看更多</view>
             </view>
             <scroll-view :scroll-y="true">
-                <t-item v-for="item in today" :data="item"> </t-item>
+                <t-item v-for="item in today" :data="item" @ontap="showDetail(item)"> </t-item>
             </scroll-view>
         </view>
 	</view>
@@ -191,8 +191,11 @@
 
 		},
 		methods: {
+            /**
+             * 跳转到新的页面
+             * @param e
+             */
             toNewPage:function (e: any) {
-                console.log(e)
                 uni.switchTab({
                     url:e,
                     success:function (result) {
@@ -204,6 +207,30 @@
                         })
                     }
                 })
+            },
+            /**
+             * 今日推荐  查看更多
+             */
+            showMore:function(){
+                uni.switchTab({
+                    url:"../try/index",
+                    success:function (result) {
+                        console.log("res: " + result)
+                    },
+                    fail:function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            /**
+             * 推荐类目点击
+             * @data 点击的内容项
+             */
+            showDetail(data:Object){
+                uni.navigateTo({
+                    url:"../taskInfo/index",
+                    events:data
+                });
             }
 		}
 	});

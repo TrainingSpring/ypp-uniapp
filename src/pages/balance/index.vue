@@ -26,7 +26,7 @@
             </card>
         </view>
         <view class="btn-group withdraw">
-            <button class="cu-btn bg-blue lg">去提现</button>
+            <navigator url="../withdraw/index" class="cu-btn bg-blue lg">去提现</navigator>
         </view>
 
     </view>
@@ -139,7 +139,7 @@
         }
         .withdraw{
             padding: 20upx 43upx;
-            button{
+            navigator{
                 width: 100%;
             }
         }

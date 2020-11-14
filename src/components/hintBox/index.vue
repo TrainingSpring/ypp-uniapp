@@ -46,31 +46,31 @@
                     return "取消"
                 }
             },
-            width:{  // 宽
+            width:{  // 模态框宽度
                 type:String,
                 default(){
                     return "200px"
                 }
             },
-            height:{  // 高
+            height:{  // 模态框高度
                 type:String,
                 default(){
                     return "214px"
                 }
             },
-            iconWidth:{
+            iconWidth:{ // 图标宽度
                 type:String,
                 default(){
                     return "100px"
                 }
             },
-            iconHeight:{
+            iconHeight:{ // 图标高度
                 type:String,
                 default(){
                     return "89px"
                 }
             },
-            button:{
+            button:{  // 按钮状态
                 type:String,
                 default(){
                     return "success"

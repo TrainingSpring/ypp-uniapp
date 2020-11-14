@@ -1,10 +1,12 @@
 {
 	"pages": [
 		{
-			"path": "pages/guide/index",
+			"path": "pages/addBankCard/index",
 			"style": {
-				"navigationBarBackgroundColor": "#ffffff",
-				"navigationBarTitleText": "游拼拼"
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTitleText": "绑定银行卡",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
 			}
 		},
 		{
@@ -17,9 +19,25 @@
 			}
 		},
 		{
+			"path": "pages/guide/index",
+			"style": {
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTitleText": "游拼拼"
+			}
+		},
+		{
+			"path": "pages/about/index",
+			"style": {
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTitleText": "关于我们",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/balance/index",
 			"style": {
-				"backgroundColor": "white",
+				"backgroundColor": "#FFFFFF",
 				"navigationBarTitleText": "余额详情",
 				"navigationBarBackgroundColor": "#F2F2F2",
 				"navigationBarTextStyle": "black"
