@@ -1,19 +1,19 @@
 {
 	"pages": [
 		{
-			"path": "pages/addBankCard/index",
+			"path": "pages/withdraw/index",
 			"style": {
 				"backgroundColor": "#F2F2F2",
-				"navigationBarTitleText": "绑定银行卡",
+				"navigationBarTitleText": "余额提现",
 				"navigationBarBackgroundColor": "#60A9FD",
 				"navigationBarTextStyle": "white"
 			}
 		},
 		{
-			"path": "pages/withdraw/index",
+			"path": "pages/addBankCard/index",
 			"style": {
 				"backgroundColor": "#F2F2F2",
-				"navigationBarTitleText": "余额提现",
+				"navigationBarTitleText": "绑定银行卡",
 				"navigationBarBackgroundColor": "#60A9FD",
 				"navigationBarTextStyle": "white"
 			}

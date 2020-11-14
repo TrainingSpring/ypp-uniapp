@@ -19,37 +19,37 @@
         <view class="title">提现金额</view>
         <view class="cu-form-group">
             <view class="title lg" style="font-size: 42upx;">￥</view>
-            <input placeholder="请输入提现金额" type="number" name="input" />
-            <text class='text'>全部提现</text>
+            <input placeholder="请输入提现金额" v-model="withdraw.money" type="number" name="input" />
+            <text class='text' @tap="withdrawAll">全部提现</text>
         </view>
         <view class="cu-form-group balance">
             <view class="title lg">可提现金额: </view>
             <view class="balance">￥{{tools.formatMoney(balance)}}元</view>
-            <text class='text'>提现记录</text>
+            <navigator url="../balance/index" class='text'>提现记录</navigator>
         </view>
         <view class="title">提现方式</view>
         <view class="cu-list menu withdraw-type" >
-            <view class="cu-item arrow">
+            <view class="cu-item arrow" @tap="selectBank">
                 <view class="content">
                     <text class="cuIcon-card text-blue"></text>
-                    <text class="text-grey">{{bank.cardName}}</text>
+                    <text class="text-grey">{{bank.cardName+(bank.cardId?`(${bank.cardId})`:'')}}</text>
                 </view>
             </view>
         </view>
         <view class="desc">
-            1、首次1元及可提现；后续满10元即可申请提现！<br><br>
-            2、到账时间：微信提现秒到账。<br><br>
-            3、提现手续费7%<br><br>
-            4、一天只允许提现一次，请勿重复提交<br><br>
+            注意：<br><br>
+            1、满10元即可发起申请提现！<br><br>
+            2、到账时间：每个月15号、30号打款！<br><br>
+            3、提现手续费7%。<br><br>
         </view>
         <view class="btn-group">
             <button class="cu-btn shadow bg-blue lg" @tap="goWithdraw">立即提现</button>
         </view>
-        <view class="real">
+        <view class="real text-gray">
             完成实名认证,保障您的资金安全. <navigator src="pages/realName/index">去认证 <text class="cuIcon-right"></text></navigator>
         </view>
         <!--        提现提示模态框   -->
-        <view class="cu-modal modal-withdraw">
+        <view class="cu-modal modal-withdraw" :class="modal.hint?'show':''">
             <view class="cu-dialog">
                 <view class="cu-bar bg-white justify-end">
                     <view class="content">
@@ -81,8 +81,8 @@
             </view>
         </view>
 <!--        模态框    银行卡选择-->
-        <view class="cu-modal bottom-modal picker" >
-            <view class="cu-dialog">
+        <view class="cu-modal bottom-modal picker" @tap="hidePicker" :class="modal.bank?'show':''" >
+            <view class="cu-dialog" @tap.prevent="cancelPropagation">
                 <view class="cu-bar bg-white">
              <!--       <view class="action text-blue">取消</view>
                     <view class="action text-green">确定</view>-->
@@ -132,6 +132,10 @@
         name: "index",
         data(){
             return {
+                modal:{
+                    hint:false,
+                    bank:false
+                },
                 wx_name:"",  // 微信名称
                 balance:1238,  // 余额
                 tax:0.07,   // 个人所得税税率
@@ -161,7 +165,7 @@
                     selected:0
                 },
                 withdraw:{
-                    money:100
+                    money:null
                 }
             }
         },
@@ -183,13 +187,53 @@
              * 点击去提现
              */
             goWithdraw(){
-                if(!this.bank.cardId){
-                    uni.showModal({
+                if(!this.withdraw.money){
+                    return uni.showToast({
+                        title:"请输入正确的金额",
+                        icon:'none'
+                    })
+                }else if(this.withdraw.money<10){
+                    return uni.showToast({
+                        title:"提现金额不得少于10元",
+                        icon:"none"
+                    })
+                }else if (this.withdraw.money > this.balance){
+                    return uni.showToast({
+                        title:"提现金额不得大于余额",
+                        icon:"none"
+                    })
+                }else if(!this.bank.cardId){
+                   return uni.showModal({
                         title:"提示",
-                        content:"请先去绑定银行卡",
+                        content:"请选择银行卡",
                         showCancel:false
                     })
                 }
+                this.$set(this.modal,'hint',true)
+            },
+            /***
+             * 全部提现按钮点击事件
+             */
+            withdrawAll:function () {
+                this.$set(this.withdraw,'money',this.balance);
+            },
+            /**
+             * 选择银行卡按钮点击
+             */
+            selectBank(){
+                this.$set(this.modal,'bank',true)
+            },
+            /**
+             * 隐藏银行卡选择
+             * */
+            hidePicker(){
+                this.modal.bank =false;
+            },
+            /***
+             * 取消事件冒泡
+             */
+            cancelPropagation(){
+                return false;
             }
         }
     }
@@ -367,8 +411,9 @@
         }
         .real{
             font-size:28upx;
-            color: #333333;
+            /*color: #333333;*/
             text-align: center;
+            margin-bottom:26upx;
             margin-top: 26upx;
             navigator{
                 display: inline;
@@ -378,6 +423,7 @@
         }
         .withdraw-type{
             margin-bottom: 32upx;
+            border-bottom: 1px solid #eeeeee;
         }
     }
 </style>

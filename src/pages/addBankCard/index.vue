@@ -32,7 +32,7 @@
                     <input type="number" id="QQ" placeholder="您的QQ号">
                 </view>
             </form>
-            <view class="desc text-sm text-gray">
+            <view class="desc text-sm text-gray padding-sm">
                 * 说明：请正确填写提款信息，如填写错误，可能无法提现成功，敬请知晓！
             </view>
         </view>
