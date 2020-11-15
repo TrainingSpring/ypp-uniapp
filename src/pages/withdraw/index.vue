@@ -37,10 +37,10 @@
             </view>
         </view>
         <view class="desc">
-            注意：<br><br>
-            1、满10元即可发起申请提现！<br><br>
-            2、到账时间：每个月15号、30号打款！<br><br>
-            3、提现手续费7%。<br><br>
+            注意：<br />
+            1、满10元即可发起申请提现！<br>
+            2、到账时间：每个月15号、30号打款！<br>
+            3、提现手续费7%。<br>
         </view>
         <view class="btn-group">
             <button class="cu-btn shadow bg-blue lg" @tap="goWithdraw">立即提现</button>
@@ -75,24 +75,24 @@
                 </view>
                 <view class="cu-bar bg-white justify-end">
                     <view class="action text-center" style="width: 100%">
-                        <button class="cu-btn bg-blue margin-left" @tap="hideModal">确定</button>
+                        <button class="cu-btn bg-blue margin-left" @tap.stop="confirmWithdra">确定</button>
                     </view>
                 </view>
             </view>
         </view>
 <!--        模态框    银行卡选择-->
         <view class="cu-modal bottom-modal picker" @tap="hidePicker" :class="modal.bank?'show':''" >
-            <view class="cu-dialog" @tap.prevent="cancelPropagation">
+            <view class="cu-dialog" @tap.stop="cancelPropagation">
                 <view class="cu-bar bg-white">
              <!--       <view class="action text-blue">取消</view>
                     <view class="action text-green">确定</view>-->
                     <view class="modal-top">
                         <view class="left">
                             <view class="modal-title">我的银行卡</view>
-                            <view class="modify">修改银行卡信息 <text class="cuIcon-right"></text></view>
+                            <navigator url="../addBankCard/index" class="modify">修改银行卡信息 <text class="cuIcon-right"></text></navigator>
                         </view>
                         <view class="right">
-                            <view class="cu-btn bg-white text-blue">确认</view>
+                            <view class="cu-btn bg-white text-blue" @tap="confirmBank">确认</view>
                         </view>
                     </view>
                 </view>
@@ -164,24 +164,30 @@
                     value:[0],
                     selected:0
                 },
+                // 提现输入信息
                 withdraw:{
-                    money:null
+                    money:null,
+                    // 临时银行卡信息
+                    tempBank:undefined
                 }
+
             }
         },
-        components:{
+        mounted(){
+            this.withdraw.tempBank = this.bankList[0]
+        },components:{
             card,
             bgi
         },
         methods: {
             /**
-             * 银行卡选项
+             * 银行卡滑动选择
              * */
             bindChange: function (e) {
-                const val = e.detail.value;
-                this.$set(this.picker,"selected",val[0]);
-                // this.picker.value[0] = val;
-                // this.picker.selected = val;
+                const val = e.detail.value[0];
+                this.$set(this.picker,"selected",val);
+                this.withdraw.tempBank = this.bankList[val]
+                console.log(this.withdraw)
             },
             /**
              * 点击去提现
@@ -227,6 +233,7 @@
              * 隐藏银行卡选择
              * */
             hidePicker(){
+                this.withdraw.tempBank = undefined;
                 this.modal.bank =false;
             },
             /***
@@ -234,6 +241,19 @@
              */
             cancelPropagation(){
                 return false;
+            },
+            /**
+             * 确定选择银行卡
+             */
+            confirmBank(){
+                let bank = this.withdraw.tempBank;
+                if (!bank){
+                    uni.showToast({
+                        title:"请选择银行卡",
+                        icon:"none",
+                        position :"bottom"
+                    })
+                }
             }
         }
     }
@@ -399,6 +419,12 @@
             font-size: 24upx;
             color: #333333;
             padding: 0 30upx;
+            // #ifndef MPWEIXIN
+            line-height: 30upx;
+            // #endif
+            // #ifndef MPWEIXIN
+            line-height: 50upx;
+            // #endif
             .li{
                 margin-bottom: 20upx;
             }
