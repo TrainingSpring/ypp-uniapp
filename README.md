@@ -104,7 +104,8 @@ ps: 小程序的background不能使用本地图片
 | --------- | ------ | ---- | ------ | -------- |
 | data      | Object |      | {}     | 单项数据 |
 | btnState  | Number |      | 0      | 按钮状态 |
-| v-btnText | String |      | 马上赚 | 按钮文字 |
+| btnText | String |      | 马上赚 | 按钮文字 |
+| btnType | String,Number |      | 0 | 按钮的样式, 0 默认背景图片样式 1 背景颜色模式 |
 
 ### methods:
 

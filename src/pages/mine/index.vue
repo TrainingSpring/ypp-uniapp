@@ -384,7 +384,7 @@
                     border-radius: 25upx;
                     height: 50upx;
                     font-size: 24upx;
-                    padding: 0 20upx;
+                    padding: 0 40upx;
                     color: white;
                     line-height: 50upx;
                 }

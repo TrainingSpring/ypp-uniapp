@@ -8,7 +8,7 @@
         <swiper class="swiper" :current="swiper">
             <swiper-item v-for="item in tab.tabList">
                 <scroll-view>
-                    <t-item v-for="i,index in item.data" :data="i"></t-item>
+                    <t-item v-for="i,index in item.data" btn-text="1小时后开始" btn-type="1" :data="i"></t-item>
                 </scroll-view>
                 <view v-if="item.data"></view>
             </swiper-item>

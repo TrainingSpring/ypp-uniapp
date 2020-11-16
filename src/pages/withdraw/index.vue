@@ -32,7 +32,7 @@
             <view class="cu-item arrow" @tap="selectBank">
                 <view class="content">
                     <text class="cuIcon-card text-blue"></text>
-                    <text class="text-grey">{{bank.cardName+(bank.cardId?`(${bank.cardId})`:'')}}</text>
+                    <text class="text-grey">{{bank.name+(bank.number?`(${bank.number})`:'')}}</text>
                 </view>
             </view>
         </view>
@@ -48,7 +48,7 @@
         <view class="real text-gray">
             完成实名认证,保障您的资金安全. <navigator src="pages/realName/index">去认证 <text class="cuIcon-right"></text></navigator>
         </view>
-        <!--        提现提示模态框   -->
+        <!--     模态框  提现提示   -->
         <view class="cu-modal modal-withdraw" :class="modal.hint?'show':''">
             <view class="cu-dialog">
                 <view class="cu-bar bg-white justify-end">
@@ -89,7 +89,7 @@
                     <view class="modal-top">
                         <view class="left">
                             <view class="modal-title">我的银行卡</view>
-                            <navigator url="../addBankCard/index" class="modify">修改银行卡信息 <text class="cuIcon-right"></text></navigator>
+                            <navigator :url="'../addBankCard/index'+JSON.stringify(this.withdraw.tempBank)" class="modify">修改银行卡信息 <text class="cuIcon-right"></text></navigator>
                         </view>
                         <view class="right">
                             <view class="cu-btn bg-white text-blue" @tap="confirmBank">确认</view>
@@ -114,10 +114,10 @@
                             </view>
                         </picker-view-column>
                     </picker-view>
-                    <view class="add">
+                    <navigator url="../addBankCard/index" class="add">
                         <view class="cuIcon-add"></view>
                         <view class="text-black">添加新储蓄卡</view>
-                    </view>
+                    </navigator>
                 </view>
             </view>
         </view>
@@ -141,8 +141,8 @@
                 tax:0.07,   // 个人所得税税率
                 tools,
                 bank:{
-                    cardId:null,
-                    cardName:"请选择银行卡"
+                    number:null,
+                    name:"请选择银行卡"
                 },
                 bankList:[
                     {
@@ -253,6 +253,10 @@
                         icon:"none",
                         position :"bottom"
                     })
+                }else{
+                    console.log(bank)
+                    this.bank = bank;
+                    this.modal.bank = false;
                 }
             }
         }

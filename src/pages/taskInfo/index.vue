@@ -1,6 +1,6 @@
 <template>
     <view class="task">
-        <card class="header">
+        <card class="header" style="padding: 20upx 35upx;" >
             <view class="dateHint">
                 游戏任务时间：10月25日12时-10月26日12时
             </view>
@@ -29,7 +29,7 @@
                 </view>
             </view>
         </card>
-        <card class="userInfo" title="请输入账号信息">
+        <card class="userInfo" style="padding: 20upx 35upx;" title="请输入账号信息">
             <view class="right" v-if="!userInfo">
                 <bgi src="../../static/task/zq.png" class="btn">
                     <text>马上去</text>
@@ -46,7 +46,7 @@
                 </view>
             </view>
         </card>
-        <card class="desc" title="游戏简介">
+        <card class="desc" style="padding: 20upx 35upx;" title="游戏简介">
             {{game.desc}}
         </card>
         <card class="taskList" title="试玩奖励">
@@ -92,7 +92,7 @@
                 </view>
                 <view class="text">联系客服</view>
             </view>
-            <view class="btn">
+            <view class="btn" @tap="startTry">
                 {{!login?"点击登录开始试玩":"开始试玩"}}
             </view>
         </view>
@@ -142,7 +142,7 @@
                 </view>
             </view>
         </view>
-        <!--   绑定游戏账号信息    -->
+        <!--   模态框  绑定游戏账号信息    -->
         <view class="cu-modal bind-account-info" :class="bindModal.show?'show':''">
             <view class="cu-dialog">
                 <view class="top">
@@ -261,7 +261,7 @@
                     endTime:null
                 },
                 bindModal:{  // 绑定账号模态框
-                    show:true
+                    show:false
                 }
             }
         },
@@ -349,6 +349,18 @@
              */
             hideTaskModal:function () {
                 this.taskModal.show = false;
+            },
+            /**
+             * 开始试玩
+             */
+            startTry(){
+                if(!this.login){
+                    uni.navigateTo({
+                        url:"../login/index"
+                    })
+                }else{
+                    
+                }
             }
         }
     }
@@ -375,6 +387,9 @@
     /*    padding: 0 34upx;*/
     /*}*/
     .task{
+        card{
+
+        }
         .dateHint{
             font-size: 24upx;
             font-family: Source Han Sans CN;

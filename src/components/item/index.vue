@@ -21,7 +21,8 @@
             <progress :percent="data.progress" :border-radius="10" active></progress>
         </view>
         <view class="get-money">
-            <bgi class="btn" :src="'../../static/btn/'+(btnState==0?'btn.png':btnState === 1?'btn_1.png':'btn_2.png')"><view style="width:117upx;margin-left: 8upx;text-align: center;">{{btnText}}</view></bgi>
+            <bgi v-if="btnType==0" class="btn" :src="'../../static/btn/'+(btnState==0?'btn.png':btnState === 1?'btn_1.png':'btn_2.png')"><view style="width:117upx;margin-left: 8upx;text-align: center;">{{btnText}}</view></bgi>
+            <view v-if="btnType==1" class="btn" style="background: #95C9FC;border-radius: 23upx;"><view style="text-align: center;">{{btnText}}</view></view>
             <view class="money">+{{(data.money)}}元</view>
         </view>
     </view>
@@ -50,7 +51,13 @@
                   return "马上赚"
               }
             },
-            itemClass:String
+            itemClass:String,
+            btnType:{
+                type:[String,Number],
+                default(){
+                    return 0;// 按钮状态， 0 默认图片背景  1  纯色背景
+                }
+            }
         },
         components:{
             bgi
