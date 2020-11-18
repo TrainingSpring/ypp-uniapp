@@ -2,7 +2,7 @@
     <view class="task">
         <card class="header" style="padding: 20upx 35upx;" >
             <view class="dateHint">
-                游戏任务时间：10月25日12时-10月26日12时
+                游戏任务时间：{{game.startTime}}-{{game.endTime}}
             </view>
             <view class="gameInfo">
                 <view class="logo">
@@ -25,7 +25,7 @@
                 </view>
                 <view class="other">
                     <view class="money">+{{game.money}}元</view>
-                    <view class="date">剩余{{game.time}}小时</view>
+                    <view class="date">剩余{{game.time}}</view>
                 </view>
             </view>
         </card>
@@ -269,6 +269,51 @@
             bgi:bg,
             card,
             hint,
+        },
+        onLoad(arg){
+            let data = JSON.parse(arg.data);
+            let gameId = parseInt(data.gameId);
+            let serverId =parseInt(data.serverId);
+            let logo = data.icon;
+            console.log("onload",data);
+            let $this = this;
+            uni.request({
+                url:$this.util.getApiUrl("/yppGame/get_game_gameServer_info"),
+                data:{
+                    gameId,
+                    serverId
+                },
+                method:"POST",
+                success:function (result) {
+                    let res_data = result.data;
+                    if (res_data.code === 200) {
+                        let res = res_data.result;
+                        let surTime = $this.util.surplusTime(res.startTime,res.endTime);
+                        // console.log(down_str);
+                        let info = { // 游戏信息
+                            icon:data.gameLogo,        // 游戏图标
+                            name:res.gameName,        // 游戏名
+                            desc:res.gameDesc,        // 描述
+                            money:data.awardMoneys,     // 赚取金额
+                            server:data.serverName,  // 区服
+                            recommend:data.isRecommend, // 推荐
+                            newGame:data.gameTag,   // 新游戏
+                            newTask:data.isNewServer,   // 新任务
+                            source:res.platformName,      // 平台
+                            type:res.typeName,          // 游戏类型
+                            gameId:res.gameId,             // 游戏id
+                            time:surTime,            // 剩余时间
+                            finishedMoney:100,  //  已完成的任务的总金额
+                            startTime:$this.util.formatDate(res.startTime,0,"MM月dd日 hh时"),  // 开始时间
+                            endTime:$this.util.formatDate(res.endTime,0,"MM月dd日 hh时"),  // 结束时间
+                        };
+                        console.log($this.util.formatDate(res.endTime, 2, "MM-dd hh:mm:ss"));
+                        $this.game = info;
+                    }else{
+                        $this.util.showInfo(0,data)
+                    }
+                }
+            })
         },
         methods:{
             /**

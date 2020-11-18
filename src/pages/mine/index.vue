@@ -248,17 +248,17 @@
         data(){
             return{
                 userInfo:
-                // undefined
-                    {
-                    head:"../../static/home/head.png",
-                    nick:"微信昵称",
-                    balance:tools.formatMoney(200),
-                    earning:[
-                        22.23,
-                        2.55,
-                        0.9
-                    ]
-                }
+                undefined
+                //     {
+                //     head:"../../static/home/head.png",
+                //     nick:"微信昵称",
+                //     balance:tools.formatMoney(200),
+                //     earning:[
+                //         22.23,
+                //         2.55,
+                //         0.9
+                //     ]
+                // }
                 ,
                 msg:false,
                 hint:false

@@ -4,8 +4,7 @@
  * 
  * 
  */
-function Tools(){
-
+function Tools() {
 }
 /** 格式化钱 */ 
 Tools.prototype.formatMoney = function(num:Number){
@@ -127,6 +126,19 @@ Tools.prototype.count_down=function(nums:number,callback:any){
  	let w_width = window.innerWidth; // 窗口的宽度
  	return (w_height + scrollY) > dom.offsetTop && (w_width + scrollX) > dom.offsetLeft;
  };
- // @ts-ignore
+/**
+ * @Author Training
+ * @Description 将服务端数据 合并到本地(将服务端的key, 渲染成本地定义的key)
+ * @Params keys: 本地定义的key 的数组  values: 对应服务端的数据
+ * 	key和value得一一对应
+ */
+Tools.prototype.mixinObject = function(keys:string[],values:any[]){
+	let temp:any = {};
+	for (let i = 0; i < keys.length; i++) {
+		temp[keys[i]] = values[i]
+	}
+	return temp;
+}
+	// @ts-ignore
 let t = new Tools();
  export default t

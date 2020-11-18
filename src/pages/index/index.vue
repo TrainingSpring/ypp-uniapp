@@ -1,12 +1,12 @@
 <template>
 	<view id="Home">
         <view class="search">
-            <search-box style="font-size: 12px;" v-model="keyword" placeholder="搜索你感兴趣的" button="inside" :mode="2"></search-box>
+            <search-box style="font-size: 12px;" v-model="keyword" placeholder="搜索你感兴趣的" @search="onSearch" button="inside" :mode="2"></search-box>
         </view>
         <!--        banner      -->
         <view class="banner">
             <swiper :circular="true" :autoplay="true" :interval="5000">
-                <swiper-item class="user-info banner" >
+                <swiper-item class="user-info banner" v-if="!!userInfo">
                     <image src="../../static/home/banner.png" class="background">
 
                     </image>
@@ -76,11 +76,13 @@
     import search from "../../components/plugin/mehaotian-search-revision/mehaotian-search-revision.vue"
     import Tools from "../../components/plugin/tool"
     import titem from "../../components/item/index.vue"
-	export default Vue.extend({
+
+    export default Vue.extend({
 		data() {
 			return {
 			    tools:Tools,
-				keyword:null,
+				keyword:"",
+                userInfo:undefined,
                 swiperList:[
                     {
                         head:"../../static/home/head.png",
@@ -97,7 +99,7 @@
                 today:[
                     {
                         icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                        name:"游戏名",        // 游戏名
+                        gameName:"游戏名",        // 游戏名
                         desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
                         progress:80,    // 进度
                         money:Tools.formatMoney(1000),     // 赚取金额
@@ -105,84 +107,16 @@
                         recommend:true, // 推荐
                         newGame:true,   // 新游戏
                         newTask:true,   // 新任务
-                        id:123,         // 任务id
-                    },
-                    {
-                        icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                        name:"游戏名",        // 游戏名
-                        desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                        progress:80,    // 进度
-                        money:Tools.formatMoney(1000),     // 赚取金额
-                        server:"二区",  // 区服
-                        recommend:true, // 推荐
-                        newGame:true,   // 新游戏
-                        newTask:true,   // 新任务
-                        id:123,         // 任务id
-                    },
-                    {
-                        icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                        name:"游戏名",        // 游戏名
-                        desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                        progress:80,    // 进度
-                        money:Tools.formatMoney(1000),     // 赚取金额
-                        server:"二区",  // 区服
-                        recommend:true, // 推荐
-                        newGame:true,   // 新游戏
-                        newTask:true,   // 新任务
-                        id:123,         // 任务id
-                    },
-                    {
-                        icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                        name:"游戏名",        // 游戏名
-                        desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                        progress:80,    // 进度
-                        money:Tools.formatMoney(1000),     // 赚取金额
-                        server:"二区",  // 区服
-                        recommend:true, // 推荐
-                        newGame:true,   // 新游戏
-                        newTask:true,   // 新任务
-                        id:123,         // 任务id
-                    },
-                    {
-                        icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                        name:"游戏名",        // 游戏名
-                        desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                        progress:80,    // 进度
-                        money:Tools.formatMoney(1000),     // 赚取金额
-                        server:"二区",  // 区服
-                        recommend:true, // 推荐
-                        newGame:true,   // 新游戏
-                        newTask:true,   // 新任务
-                        id:123,         // 任务id
-                    },
-                    {
-                        icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                        name:"游戏名",        // 游戏名
-                        desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                        progress:80,    // 进度
-                        money:Tools.formatMoney(1000),     // 赚取金额
-                        server:"二区",  // 区服
-                        recommend:true, // 推荐
-                        newGame:true,   // 新游戏
-                        newTask:true,   // 新任务
-                        id:123,         // 任务id
-                    },
-                    {
-                        icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                        name:"游戏名",        // 游戏名
-                        desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                        progress:80,    // 进度
-                        money:Tools.formatMoney(12.5),     // 赚取金额
-                        server:"二区",  // 区服
-                        recommend:true, // 推荐
-                        newGame:true,   // 新游戏
-                        newTask:true,   // 新任务
-                        id:123,         // 任务id
-                    },
+                        gameId:123,         // 游戏id
+                        serverId:1, // 区服id
+                    }
                 ]
 
 			}
 		},
+        mounted(){
+		    this.init();
+        },
         components:{
 		    "search-box":search,
             tItem:titem,
@@ -191,11 +125,61 @@
 
 		},
 		methods: {
+		    /**
+             * 页面初始化
+             * */
+		    init(){
+		        let $this = this;
+		        // 获取用户登录信息
+                this.userInfo = uni.getStorageSync("userInfo");
+                // 获取今日推荐信息
+                console.log($this.util.getApiUrl("/yppGame/get_index_games"))
+                uni.request({
+                    url:$this.util.getApiUrl("/yppGame/get_index_games"),
+                    method:"POST",
+                    data:{
+                        gameType:null,
+                        page:1,
+                        limit:10
+                    },
+                    header:{
+                        'Content-Type':'application/json'
+                    },
+                    success:function (result) {
+                        let data:any = result.data;
+                        if (data.code === 200) {
+                            $this.today = data.result.records;
+                        }else{
+                            uni.showToast({
+                                title:`${data.error},${data.msg}`,
+                                icon:"none"
+                            })
+                        }
+                        console.log("gameList",result);
+                    },
+                    fail:function (err) {
+                        console.log("gameListError:",err)
+                    }
+                })
+            },
+            /**
+             * 搜索
+             * */
+            onSearch(){
+		       uni.navigateTo({
+                   url:"/pages/search/index?key="+this.keyword
+               })
+            },
             /**
              * 跳转到新的页面
              * @param e
              */
             toNewPage:function (e: any) {
+                if(!this.userInfo){
+                    return uni.navigateTo({
+                        url:"../login/index"
+                    })
+                }
                 uni.switchTab({
                     url:e,
                     success:function (result) {
@@ -237,6 +221,7 @@
 </script>
 
 <style lang="scss">
+    @import "../../static/css/iconfont.css";
     page{
         background: #fff;
     }
@@ -244,7 +229,6 @@
         width:100%;
         height:100%;
     }
-    @import "../../static/css/iconfont.css";
     .search{
         padding: 8px 16px;
     }

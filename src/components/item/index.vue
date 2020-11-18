@@ -1,29 +1,31 @@
 <!--游戏列表项-->
 <template>
     <view class="t-game-item" :class="itemClass" @tap="clickThis(data)">
-        <view class="logo" :style="{'background':'url('+data.icon+') no-repeat',backgroundSize:'cover'}">
+        <view class="logo" :style="{'background':'url('+data.gameLogo+') no-repeat',backgroundSize:'cover'}">
 
-            <view v-if="data.newGame" class="new">
+            <view v-if="data.gameTag" class="new">
                 NEW
             </view>
         </view>
         <view class="content">
             <view class="name">
-                <view>{{data.name}}</view>
-                <view>{{data.server}}</view>
-                <view v-if="data.recommend" class="iconfont icon-tuijian" style="color:red;"></view>
-                <view v-if="data.newTask" class="iconfont icon-zuixin" style="color: red;"></view>
+                <view >{{data.gameName}}</view>
+
             </view>
-            <view class="desc">{{data.desc}}</view>
+            <view class="desc">
+                <view>{{data.serverName}}</view>
+                <view v-if="data.isRecommend" class="iconfont icon-tuijian" style="color:red;"></view>
+                <view v-if="data.isNewServer" class="iconfont icon-zuixin" style="color: red;"></view>
+            </view>
         </view>
         <view class="progress">
-            <text>{{data.progress}}%</text>
-            <progress :percent="data.progress" :border-radius="10" active></progress>
+            <text>{{progress}}%</text>
+            <progress :percent="progress" :border-radius="10" active></progress>
         </view>
         <view class="get-money">
             <bgi v-if="btnType==0" class="btn" :src="'../../static/btn/'+(btnState==0?'btn.png':btnState === 1?'btn_1.png':'btn_2.png')"><view style="width:117upx;margin-left: 8upx;text-align: center;">{{btnText}}</view></bgi>
             <view v-if="btnType==1" class="btn" style="background: #95C9FC;border-radius: 23upx;"><view style="text-align: center;">{{btnText}}</view></view>
-            <view class="money">+{{(data.money)}}元</view>
+            <view class="money">+{{(data.awardMoneys)}}元</view>
         </view>
     </view>
 </template>
@@ -32,6 +34,16 @@
     import bgi from "../../components/bg/index.vue"
     export default {
         name: "index",
+        data(){
+            return{
+            }
+        },
+        computed:{
+            progress :function(){
+                return parseInt(this.data.remainNums)/parseInt(this.data.taskNums)*100
+            }
+        },
+
         props:{
             data:{   // 数据
                 type:Object,
@@ -73,7 +85,7 @@
 <style lang="scss" scoped>
     @import "../../static/css/iconfont.css";
     .t-game-item{
-        width: calc(100% - 60upx);
+        width: calc(100%);
         padding: 30upx;
         display: flex;
         justify-content: space-between;
@@ -100,21 +112,9 @@
             .name{
                 display: flex;
                 justify-content: start;
-                view{
-                    margin-right: 12upx;
-                }
-                view:first-child{
-                    font-size: 30upx;
-                    font-weight: bold;
-                    color: #000;
-                }
-                view:nth-child(2){
-                    background: #4BB2FF;
-                    color: #FFF;
-                    height: 32upx;
-                    padding:0 6upx;
-                    font-size: 24upx;
-                }
+                font-size: 30upx;
+                font-weight: bold;
+                color: #000;
             }
             .desc{
                 font-size: 22upx;
@@ -123,6 +123,21 @@
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
+                display: flex;
+                justify-content: flex-start;
+                align-items: stretch;
+
+                view:first-child{
+                    background: #4BB2FF;
+                    color: #FFF;
+                    height: 32upx;
+                    padding:0 6upx;
+                    font-size: 24upx;
+                }
+
+                view{
+                    margin-right: 12upx;
+                }
             }
         }
         .progress{

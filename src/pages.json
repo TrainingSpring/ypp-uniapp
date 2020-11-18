@@ -1,10 +1,35 @@
 {
 	"pages": [
 		{
+			"path": "pages/try/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "试玩中心",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页",
 				"backgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/search/index",
+			"style": {
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTitleText": "搜索",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/guide/index",
+			"style": {
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTitleText": "游拼拼"
 			}
 		},
 		{
@@ -23,13 +48,6 @@
 				"navigationBarTitleText": "绑定银行卡",
 				"navigationBarBackgroundColor": "#60A9FD",
 				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/guide/index",
-			"style": {
-				"navigationBarBackgroundColor": "#ffffff",
-				"navigationBarTitleText": "游拼拼"
 			}
 		},
 		{
@@ -136,15 +154,6 @@
 			"style": {
 				"backgroundColor": "#ffffff",
 				"navigationBarTitleText": "试玩预告",
-				"navigationBarBackgroundColor": "#60A9FD",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/try/index",
-			"style": {
-				"backgroundColor": "#ffffff",
-				"navigationBarTitleText": "试玩中心",
 				"navigationBarBackgroundColor": "#60A9FD",
 				"navigationBarTextStyle": "white"
 			}
