@@ -31,7 +31,7 @@
         </card>
         <card class="userInfo" style="padding: 20upx 35upx;" title="请输入账号信息">
             <view class="right" v-if="!userInfo">
-                <bgi src="../../static/task/zq.png" class="btn">
+                <bgi src="../../static/task/zq.png" class="btn" @tap="goBindInfo">
                     <text>马上去</text>
                 </bgi>
             </view>
@@ -57,32 +57,34 @@
             </view>
             <view class="hint"><text>请切勿在其他平台或跳转"应用商店"安装,否则将无法获得奖励</text></view>
             <!--   任务列表   -->
-            <view class="task-item" v-for="item in task">
+            <task-list v-for="item in task" v-if="task.length >0" :data="item"></task-list>
+            <view v-if="task.length <= 0" class="text-center text-gray padding">暂时没有任务</view>
+            <!--<view class="task-item" v-for="(item,index) in task">
                 <view class="left">
                     <view class="top">
                         <text class="iconfont icon-task"></text>
-                        <text class="task-title">{{item.title}}</text>
+                        <text class="task-title">{{item.taskName}}</text>
                         <text class="iconfont question icon-yiwen" @tap="taskExplain(item)"></text>
                     </view>
                     <view class="bottom">
-                        {{(item.state===2)?"已完成":"待完成"}}
+                        {{item.submitStatus==-1 ?"待完成":item.submitStatus == 0?"完成中":item.submitStatus == 1 ?"审核中":item.submitStatus==2?"审核结算":"失败"}}
                     </view>
                 </view>
                 <view class="center">
-                    <view class="top">&nbsp;&nbsp;&nbsp;1</view>
+                    <view class="top">1</view>
                     <view class="bottom">
-                        试玩名额：{{item.nums}}/{{item.sum}}
+                        试玩名额：{{item.taskNum - item.remainNum}}/{{item.taskNum}}
                     </view>
                 </view>
                 <view class="right">
                     <view class="top">
-                        +{{tools.formatMoney(item.money)}}元
+                        +{{item.awardMoney}}元
                     </view>
                     <view class="bottom">
-                        <view class="btn" :style="{background:item.state === 2?'#C1C1C1':'#95C9FC'}" @tap="submit(item)">{{item.state === 1?"立即提交":"立即领取"}}</view>
+                        <view class="btn" :class="item.submitStatus == -1?'bg-blue':item.submitStatus==0?'bg-green':'bg-grey'" @tap="submit(item,index)">{{item.submitStatus == -1?"立即领取":"立即提交"}}</view>
                     </view>
                 </view>
-            </view>
+            </view>-->
         </card>
         <view class="space"></view>
         <view class="page-bottom">
@@ -112,11 +114,11 @@
                 @onTap="hintClick"
         >
             <view class="hint-msg-1" v-if="hint.type === 1">
-                <view class="title">任务完成</view>
+                <view class="title" style="padding-top:89px;">任务完成</view>
                 <view class="detail">提交审核领取试玩奖励！</view>
             </view>
             <view class="hint-msg-0" v-if="hint.type !== 1">
-                <view class="title">{{hint.hintTitle}}</view>
+                <view class="title" style="padding-top:50px;">{{hint.hintTitle}}</view>
                 <view class="detail">
                     {{hint.hintCont}}
                 </view>
@@ -143,8 +145,8 @@
             </view>
         </view>
         <!--   模态框  绑定游戏账号信息    -->
-        <view class="cu-modal bind-account-info" :class="bindModal.show?'show':''">
-            <view class="cu-dialog">
+        <view class="cu-modal bind-account-info" @tap="modalHide(3)" :class="bindModal.show?'show':''">
+            <view class="cu-dialog" @tap.stop="clearPre">
                 <view class="top">
                     <bgi class="title" src="../../static/taskInfo/title_bg.png"><text>请填写游戏信息</text></bgi>
                 </view>
@@ -154,26 +156,32 @@
                             <view class="row">
                                 <view class="after">
                                     <i class="iconfont icon-ContextPhone"></i>
-                                    <input type="text" id="account" value="56454159" placeholder="请输入游戏账号">
+                                    <input type="text" id="account" v-model="bindModal.account" placeholder="请输入游戏账号">
                                 </view>
 
-                                <bgi class="get-info btn" src="../../static/task/border.png"><text>点击查询</text></bgi>
+                                <bgi class="get-info btn" src="../../static/task/border.png" @tap="searchRoleInfo"><text>点击查询</text></bgi>
                             </view>
                             <view class="row">
                                 <i class="iconfont icon-role"></i>
-                                <view class="role">请选择游戏角色</view>
+                                <view class="role">
+                                    <text v-if="bindModal.data.length===0">请选择游戏角色</text>
+                                    <picker v-else @change="bindPickerChange" :value="bindModal.index" range-key="cp_role_name" :range="bindModal.data" >
+                                        <view class="uni-input">{{bindModal.data[bindModal.index].cp_role_name}}</view>
+                                    </picker>
+                                </view>
+
                                 <!-- <view class="btn select-role">选择</view> -->
                             </view>
                             <view class="row">
                                 <i class="iconfont icon-dengji"></i>
-                                <view class="level text">游戏等级: <span></span></view>
+                                <view class="level text">游戏等级: {{bindModal.level}}<span></span></view>
                             </view>
-                             <view class="row">
+                             <!--<view class="row">
                                 <i class="iconfont icon-jine"></i>
                                 <view class="money text">充值金额:<span></span></view>
-                            </view>
+                            </view>-->
                         </view>
-                        <view id="bind">立即绑定</view>
+                        <view id="bind" @tap="bindRoleInfo">立即绑定</view>
                     </view>
                 </view>
             </view>
@@ -186,12 +194,16 @@
     import bg from "../../components/bg/index.vue"
     import card from "../../components/card/index.vue"
     import hint from "../../components/hintBox/index.vue"
+    import taskList from "../../components/taskList/index.vue"
+
     export default {
         name: "index",
         data(){
             return {
                 login:undefined, // 登录信息
                 tools:tools,
+                array: [{name:'中国'},{name: '美国'}, {name:'巴西'}, {name:'日本'}],
+                index:0,
                 game:{ // 游戏信息
                     icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
                     name:"游戏名",        // 游戏名
@@ -209,13 +221,13 @@
                     finishedMoney:100  //  已完成的任务的总金额
                 },
                 userInfo:  // 该游戏用户绑定信息
-                // undefined
-                    {
-                        account:"123456789",   // 账号
-                        role:"逆天",  // 角色
-                        level:24,   // 等级
-                        money:tools.formatMoney(145.2)  // 充值金额
-                }
+                undefined
+                //     {
+                //         account:"123456789",   // 账号
+                //         role:"逆天",  // 角色
+                //         level:24,   // 等级
+                //         money:tools.formatMoney(145.2)  // 充值金额
+                // }
                 ,
                 task:[  // 任务列表
                     {
@@ -261,7 +273,14 @@
                     endTime:null
                 },
                 bindModal:{  // 绑定账号模态框
-                    show:false
+                    show:false,
+                    account:null,
+                    level:"",
+                    data:[],
+                    index:0
+                },
+                storage:{
+                    loginInfo:uni.getStorageSync("loginInfo")
                 }
             }
         },
@@ -269,14 +288,17 @@
             bgi:bg,
             card,
             hint,
+            taskList
         },
         onLoad(arg){
-            let data = JSON.parse(arg.data);
+            let data = JSON.parse(arg.data);  // 游戏的基本信息;
             let gameId = parseInt(data.gameId);
             let serverId =parseInt(data.serverId);
-            let logo = data.icon;
-            console.log("onload",data);
             let $this = this;
+            let userInfo = this.login = uni.getStorageSync("userInfo");  // 获取用户登录信息
+            // this.login = userInfo;
+            let loginInfo = uni.getStorageSync("loginInfo"); // 获取用户登录的uid等信息
+            // 获取游戏的相关信息
             uni.request({
                 url:$this.util.getApiUrl("/yppGame/get_game_gameServer_info"),
                 data:{
@@ -287,53 +309,86 @@
                 success:function (result) {
                     let res_data = result.data;
                     if (res_data.code === 200) {
+
                         let res = res_data.result;
                         let surTime = $this.util.surplusTime(res.startTime,res.endTime);
                         // console.log(down_str);
-                        let info = { // 游戏信息
-                            icon:data.gameLogo,        // 游戏图标
-                            name:res.gameName,        // 游戏名
-                            desc:res.gameDesc,        // 描述
-                            money:data.awardMoneys,     // 赚取金额
-                            server:data.serverName,  // 区服
-                            recommend:data.isRecommend, // 推荐
-                            newGame:data.gameTag,   // 新游戏
-                            newTask:data.isNewServer,   // 新任务
-                            source:res.platformName,      // 平台
-                            type:res.typeName,          // 游戏类型
-                            gameId:res.gameId,             // 游戏id
-                            time:surTime,            // 剩余时间
-                            finishedMoney:100,  //  已完成的任务的总金额
-                            startTime:$this.util.formatDate(res.startTime,0,"MM月dd日 hh时"),  // 开始时间
-                            endTime:$this.util.formatDate(res.endTime,0,"MM月dd日 hh时"),  // 结束时间
+                        $this.game = { // 游戏信息
+                            icon: data.gameLogo,        // 游戏图标
+                            name: res.gameName,        // 游戏名
+                            desc: res.gameDesc,        // 描述
+                            money: data.money,     // 赚取金额
+                            server: data.serverName,  // 区服
+                            recommend: data.isRecommend, // 推荐
+                            newGame: data.gameTag,   // 新游戏
+                            newTask: data.isNewServer,   // 新任务
+                            source: res.platformName,      // 平台
+                            type: res.typeName,          // 游戏类型
+                            gameId: res.gameId,             // 游戏id
+                            serverId: res.serverId,         // 区服id
+                            time: surTime,            // 剩余时间
+                            finishedMoney: 100,  //  已完成的任务的总金额
+                            startTime: $this.util.formatDate(res.startTime, 0, "MM月dd日 hh时"),  // 开始时间
+                            endTime: $this.util.formatDate(res.endTime, 0, "MM月dd日 hh时"),  // 结束时间
                         };
-                        console.log($this.util.formatDate(res.endTime, 2, "MM-dd hh:mm:ss"));
-                        $this.game = info;
                     }else{
                         $this.util.showInfo(0,data)
                     }
                 }
             })
+            // 获取游戏任务相关信息
+            uni.request({
+                url:$this.util.getApiUrl("/yppTask/get_task_list_and_isreceive"),
+                data:{
+                    uid:loginInfo.uid,
+                    gameId:data.gameId,
+                    serverId:data.serverId,
+                    taskType:1
+                },
+                method:"POST",
+                success(res){
+                    let r_data = res.data;
+                    if (r_data.code === 200) {
+                        $this.task = r_data.result.records;
+                        console.log( $this.task,"666666666666666666666");
+                    }else{
+                        $this.util.showInfo(0,r_data);
+                    }
+                }
+            })
         },
         methods:{
+
+            bindPickerChange: function(e) {
+                let index = e.detail.value;
+                this.bindModal.index = index;
+                this.bindModal.level = this.bindModal.data[index]["cp_role_level"]
+
+
+            },
             /**
              * 提交任务
              */
-            submit(data){
-                let state = data.state;
+            submit(data,index){
+                let state = typeof data.submitStatus === "string"?parseInt(data.submitStatus):data.submitStatus;
                 let hint = this.hint;
+                let $this = this;
                 // 打开模态框
-                if (state !== 2)
-                    this.hint.show = true;
+                if (state === 1 || state === 2)return;
                 let setInfo = (options={})=>{
                     console.log(this.hint);
                     this.hint = Object.assign(hint,options)
                 };
-                if(state === 1){
+                uni.showLoading({
+                    title:"请稍后"
+                });
+                console.log("状态",state);
+                if(state === 0){ // 提交任务
                     // 提交ajax
-                    // ......
+
                     let hintState = 1;   // 0失败
-                    if(hintState)
+                    uni.hideLoading();
+                    $this.hint.show = true;
                         setInfo({
                             icon:"../../static/hint/success.png",
                             type:1,
@@ -341,37 +396,85 @@
                             cancel:"暂不提交",
                             button:'success'
                         });
-                    else{
-                        setInfo({
-                            icon:"../../static/hint/fail.png",
-                            type:0,
-                            confirm:"我知道了",
-                            hintTitle:"提交失败",
-                            hintCont:"网络错误, 请稍后重新提交",
-                            button:"fail"
-                        });
-                    }
-                }else if(state === 0){
-                    let hintState = 0;   // 0失败
-                    if(hintState)
-                        setInfo({
-                            icon:"../../static/hint/icon.png",
-                            type:0,
-                            confirm:"我知道了",
-                            hintTitle:"恭喜领取成功",
-                            hintCont:"您已领取试玩任务成功，请尽快完成试玩任务"
-                        });
-                    else
-                        setInfo({
-                            icon:"../../static/hint/fail.png",
-                            type:0,
-                            confirm:"我知道了",
-                            hintTitle:"很遗憾领取失败", // 很遗憾领取失败
-                            hintCont:"您还有任务未完成，请完成后，再领取！", //此任务为新人专享！
-                            button:"fail"
-                        });
+                        this.hintClick = function (res) {
+                            if (res === 0) this.hint.show = false;
+                            else {
+                                uni.showLoading({
+                                    title:"请稍后..."
+                                });
+                                uni.request({
+                                    url:$this.util.getApiUrl("/yppTask/submit_task"),
+                                    data:{
+                                        uid:$this.storage.loginInfo.uid,
+                                        taskId:data.taskId
+                                    },
+                                    method:"POST",
+                                    success(res){
+                                        $this.hint.show = false;
+                                        if (res.data.code === 200) {
+                                            uni.hideLoading();
+                                            $this.util.showInfo(1,res.data);
+                                        }else{
+                                            $this.util.showInfo(0,res.data);
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                }else if(state === -1){ // 领取任务
+                    uni.request({
+                        url:$this.util.getApiUrl("/yppTask/receive_task"),
+                        method:"POST",
+                        data:{
+                            uid:$this.storage.loginInfo.uid,
+                            taskId:data.taskId
+                        },
+                        success(result){
+                            let r_data = result.data;
+                            $this.hint.show = true;
+                            uni.hideLoading();
+                            if (r_data.code === 200) {
+                                setInfo({
+                                    icon:"../../static/hint/icon.png",
+                                    type:0,
+                                    confirm:"我知道了",
+                                    hintTitle:"恭喜领取成功",
+                                    hintCont:"您已领取试玩任务成功，请尽快完成试玩任务"
+                                });
+                                $this.task[index].submitStatus = 0;
+                            }else{
+                                setInfo({
+                                    icon:"../../static/hint/fail.png",
+                                    type:0,
+                                    confirm:"我知道了",
+                                    hintTitle:"很遗憾领取失败", // 很遗憾领取失败
+                                    hintCont:r_data.msg, //此任务为新人专享！
+                                    button:"fail"
+                                });
+                            }
+                        }
+                    });
                 }
             },
+            /**
+             * 去绑定信息
+             * */
+            goBindInfo(){
+                this.bindModal.show = true;
+            },
+            /**
+             *
+             * */
+            modalHide(e){
+                if (e === 3)
+                    this.bindModal.show = false;
+                else if(e === 2)
+                    this.hint.show = false;
+                else
+                    this.taskModal.show = false;
+            },
+            /**去除事件冒泡*/
+            clearPre(){},
             /**
              *  当提示框的按钮被点击时
              */
@@ -383,9 +486,9 @@
              */
             taskExplain:function(data){
                 this.taskModal.show = true;
-                this.taskModal.sum = data.sum;
-                this.taskModal.nums = data.nums;
-                this.taskModal.condition = data.condition;
+                this.taskModal.sum = data.taskNum; // 总数
+                this.taskModal.nums = data.taskNum - data.remainNum;  // 剩余数
+                this.taskModal.condition = data.taskDesc;
                 this.taskModal.endTime = data.endTime;
 
             },
@@ -406,6 +509,56 @@
                 }else{
                     
                 }
+            },
+            /**
+             * 查询角色信息
+             */
+            searchRoleInfo(){
+                let $this = this;
+                // userId:"56453791",
+                // gameName:"轩辕剑群侠录商城版",
+                // serverName:"宝石1区"
+                uni.request({
+                    url:$this.util.getApiUrl("/request/post"),
+                    data:{
+                        url:"http://sdk.msg.server.90yx.cn/sdk/game_user_role_new",
+                            userId: $this.bindModal.account, //56454370, // $this.bindModal.account,
+                            gameName: $this.game.name,// "三国计", // $this.game.name,
+                            serverName: $this.game.server // "战火连天1区" //$this.game.server
+
+                    },
+                    method:"POST",
+                    header:{
+                      "Content-Type":'application/x-www-form-urlencoded'
+                    },
+                    success:function (result) {
+                        console.log(result.data.result);
+                        if (result.data.code === 200) {
+                            $this.bindModal.data = result.data.result.info;
+                            $this.bindModal.level = result.data.result.info[0]["cp_role_level"]
+                        }else{
+                            $this.util.showInfo(0,result.data);
+                        }
+                    }
+                })
+            },
+            /**
+             * 绑定游戏角色信息
+             * 立即绑定按钮
+             */
+            bindRoleInfo(){
+                let $this = this;
+                uni.request({
+                    url:$this.util.getApiUrl("/yppUser/bind_user_game_account"),
+                    data:{
+                        account:$this.userInfo.account,
+                        gameId:$this.info.id,
+                        gameName:$this.info.name,
+                        roleName:$this.userInfo.role,
+                        serverName:$this.info.server,
+                        serverId:$this.info.serverId
+                    }
+                })
             }
         }
     }
@@ -623,7 +776,7 @@
                             height: 46upx;
                             line-height: 46upx;
                             color: #FFFFFF;
-                            background: #C1C1C1;
+                            /*background: #C1C1C1;*/
                             border-radius: 23upx;
                         }
                     }
@@ -780,12 +933,18 @@
                 text-indent: 1em;
                 margin-top: 6.3upx;
                 line-height: 50.4upx;
+                position: relative;
                 border-radius: 5px;
             }
             #bind_info .form .row .role::after{
+                position: absolute;
                 content: "\25BC";
-                float: right;
-                margin-right: 10upx;
+                right: 10upx;
+                top: 4upx;
+                /*margin-right: 10upx;*/
+            }
+            #bind_info .form .row picker::after{
+                content :"" !important;
             }
             #bind_info .form .row .role,#bind_info .form .row .text{
                 display: inline-block;

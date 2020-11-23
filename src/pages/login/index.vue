@@ -22,14 +22,51 @@
     export default {
         name: "index",
         data(){
-            return{}
+            return{
+                uid:null
+            }
+        },
+        mounted(){
+            let $this = this;
+            uni.login({
+                success(res){
+                    if (res.errMsg === "login:ok") {
+                        uni.request({
+                            url:$this.util.getApiUrl("/yppUser/login_wechat"),
+                            method:"POST",
+                            data:{
+                                wechatCode:res.code
+                            },
+                            success(suc){
+                                let data = suc.data;
+                                if (data.code === 200) {
+                                    $this.uid = data.result.uid;
+                                    uni.setStorage({
+                                        key:"loginInfo",
+                                        data:data.result
+                                    })
+                                }else{
+                                    $this.util.showInfo(0,data);
+                                }
+                            }
+                        })
+                    }
+                },
+                fail(err){
+
+                }
+            });
         },
         methods:{
             login:function (res) {
+                uni.showLoading({
+                    title:"请稍后...",
+                });
                 // #ifdef MP-WEIXIN
                 let detail = res.detail;
                 let state = detail.errMsg;
-                console.log(state);
+                let $this = this;
+                console.log(res);
                 if(state === "getUserInfo:fail auth deny"){
                         uni.showToast({
                             title:"授权失败!",
@@ -37,14 +74,38 @@
                         })
                     }else{
                         let userInfo = detail.userInfo;
-                        console.log(userInfo);
+                        let uid = $this.uid;
 
-                        uni.showLoading({
-                            title:"请稍后...",
-                        })
-                        uni.switchTab({
-                            url:"/pages/index/index"
-                        })
+                        uni.request({
+                            url:$this.util.getApiUrl("/yppUser/save_user_info_wechat"),
+                            method:"POST",
+                            data:{
+                                uid:uid,
+                                rawData:detail.rawData,
+                                signature:detail.signature,
+                                iv:detail.iv,
+                                encryptedData:detail.encryptedData
+                            },
+                            success(response){
+                                if (response.data.code === 200) {
+                                    uni.setStorage({
+                                        key:'userInfo',
+                                        data:userInfo,
+                                        success(){
+                                            // 保存到storage成功后 跳转页面
+                                            /*uni.switchTab({
+                                                url:"/pages/index/index"
+                                            });*/
+                                            // 返回上一个页面
+                                            uni.navigateBack({})
+                                        }
+                                    });
+                                }else{
+                                    $this.util.showInfo(0,response.data);
+                                }
+                            }
+                        });
+
                     }
                 console.log(res);
                 // #endif

@@ -1,29 +1,32 @@
 <template>
     <view class="balance">
         <bgi src="../../static/balance/bg.png" class="top">
-            <view class="title">我的余额</view>
-            <view class="money">￥ {{tools.formatMoney(balance)}}</view>
-            <view class="hint">
-                <view class="li">注意：</view>
-                <view class="li">1、首次1元及可提现；后续满10元即可申请提现！</view>
-                <view class="li">2、到账时间：微信提现秒到账。</view>
-                <view class="li">3、提现手续费3%。</view>
-                <view class="li">4、一天只允许提现一次，请勿重复提交</view>
+            <view class="info">
+                <view class="title">我的余额</view>
+                <view class="money">￥ {{balance}}</view>
+                <view class="hint">
+                    <view class="li">注意：</view>
+                    <view class="li">1、首次1元及可提现；后续满10元即可申请提现！</view>
+                    <view class="li">2、到账时间：根据各银行情况。</view>
+                    <view class="li">3、提现手续费7%。</view>
+                    <view class="li">4、一天只允许提现一次，请勿重复提交</view>
+                </view>
             </view>
         </bgi>
         <view class="content">
             <view class="title">余额明细</view>
-            <card :title="item.title" class="item" v-for="item in details">
+            <card title="提现" class="item" v-for="item in details">
                 <view class="li">
-                    <view>微信: {{item.wx}}</view>
-                    <view>{{item.state === 0?'已提交':item.state === 1?'成功':'失败'}}</view>
+                    <view>卡号: {{item.bankNum}}</view>
+                    <view>{{item.status === 0?'已提交':item.status === 1?'成功':'失败'}}</view>
                 </view>
                 <view class="li">
-                    <view>提现编号:{{item.number}}</view>
-                    <view>{{item.date}}</view>
+                    <view>提现编号:{{item.recordNum}}</view>
+                    <view>{{item.createTime}}</view>
                 </view>
-                <view class="money">+{{tools.formatMoney(item.money)}}</view>
+                <view class="money">+{{item.withdrawMoney}}</view>
             </card>
+            <view v-if="details.length === 0" class="text-center text-sm text-gray padding">暂无提现记录</view>
         </view>
         <view class="btn-group withdraw">
             <navigator url="../withdraw/index" class="cu-btn bg-blue lg">去提现</navigator>
@@ -40,34 +43,56 @@
         name: "index",
         data(){
             return {
-                balance:0.33,
+                balance:10000,
                 tools:tools,
                 details:[
-                    {
-                        title:"提现",
-                        wx:"12312312",
-                        number:"54635431",
-                        state:1,
-                        date:"2020-11-11 20:40",
-                        money:100
+                ],
+                loginInfo:uni.getStorageSync("loginInfo")
+            }
+        },
+        mounted(){
+            this.init();
+        },
+        methods:{
+            /**
+             * 初始化
+             */
+            init(){
+                let $this = this;
+                uni.showLoading({
+                    title:"请稍后"
+                });
+                // 获取用户余额
+                this.util.getUserInfo(this).then(res=>{
+                    $this.$set($this,"balance",res.result.balance);
+                    uni.hideLoading();
+                })
+            },
+            /**
+             * @desc 获取提现记录
+             * */
+            getRecord(page){
+                uni.showLoading({
+                    title:"请稍后..."
+                });
+                let $this = this;
+                uni.request({
+                    url:"/yppUser/get_balance_detail",
+                    data:{
+                        uid:$this.loginInfo.uid,
+                        page,
+                        limit:10
                     },
-                    {
-                        title:"提现",
-                        wx:"12312312",
-                        number:"54635431",
-                        state:1,
-                        date:"2020-11-11 20:40",
-                        money:100
-                    },
-                    {
-                        title:"提现",
-                        wx:"12312312",
-                        number:"54635431",
-                        state:1,
-                        date:"2020-11-11 20:40",
-                        money:100
-                    },
-                ]
+                    method:"POST",
+                    success(res){
+                        let data = res.data;
+                        if (data.code === 200) {
+                            $this.details=data.result.records;
+                        }else{
+                            $this.util.showInfo(0,data);
+                        }
+                    }
+                })
             }
         },
         components:{
@@ -82,12 +107,14 @@
     @import "../../components/plugin/colorui/icon.css";
     .balance{
         .top{
-            width: 749.4upx;
-            height: 326.3upx;
-            position: relative;
-            color: #FFFFFF;
-            text-align: center;
-            margin-bottom: 106upx;
+            .info{
+                width: 749.4upx;
+                height: 326.3upx;
+                position: relative;
+                color: #FFFFFF;
+                text-align: center;
+            }
+
             .title{
                 font-size: 36upx;
                 padding-top:54upx;
@@ -108,10 +135,14 @@
                 border-radius: 88upx;
                 margin: 10upx auto 0;
                 text-indent: 75upx;
+                position: absolute;
+                bottom: -100upx;
+                left: calc((100vw - 689upx)/2);
             }
         }
         .content{
             padding:  50upx 30upx;
+            margin-top: 106upx;
             .title{
                 font-size: 36upx;
                 color: #1a1a1a;

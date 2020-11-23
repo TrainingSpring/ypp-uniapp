@@ -31,8 +31,13 @@
         name: "index",
         data(){
             return {
-                phone:123481541
+                phone:null
             }
+        },
+        onShow() {
+            let phone = uni.getStorageSync("phoneNumber");
+            if (phone)
+                this.phone = phone;
         }
     }
 </script>

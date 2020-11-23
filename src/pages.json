@@ -1,35 +1,10 @@
 {
 	"pages": [
 		{
-			"path": "pages/try/index",
-			"style": {
-				"backgroundColor": "#ffffff",
-				"navigationBarTitleText": "试玩中心",
-				"navigationBarBackgroundColor": "#60A9FD",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页",
 				"backgroundColor": "#FFFFFF"
-			}
-		},
-		{
-			"path": "pages/search/index",
-			"style": {
-				"backgroundColor": "#F2F2F2",
-				"navigationBarTitleText": "搜索",
-				"navigationBarBackgroundColor": "#60A9FD",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/guide/index",
-			"style": {
-				"navigationBarBackgroundColor": "#ffffff",
-				"navigationBarTitleText": "游拼拼"
 			}
 		},
 		{
@@ -51,10 +26,10 @@
 			}
 		},
 		{
-			"path": "pages/about/index",
+			"path": "pages/tryPrediction/index",
 			"style": {
-				"backgroundColor": "#F2F2F2",
-				"navigationBarTitleText": "关于我们",
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "试玩预告",
 				"navigationBarBackgroundColor": "#60A9FD",
 				"navigationBarTextStyle": "white"
 			}
@@ -66,6 +41,87 @@
 				"navigationBarTitleText": "余额详情",
 				"navigationBarBackgroundColor": "#F2F2F2",
 				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/taskStatus/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "我的任务",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/myTry/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "我的试玩",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/try/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "试玩中心",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/mine/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "个人中心",
+				"navigationBarBackgroundColor": "#F2F2F2",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/realName/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "实名认证",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/showBind/index",
+			"style": {
+				"backgroundColor": "#ffffff",
+				"navigationBarTitleText": "账号绑定",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/phone/index",
+			"style": {
+				"navigationBarTitleText": "绑定手机号码",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/search/index",
+			"style": {
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTitleText": "搜索",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/about/index",
+			"style": {
+				"backgroundColor": "#F2F2F2",
+				"navigationBarTitleText": "关于我们",
+				"navigationBarBackgroundColor": "#60A9FD",
+				"navigationBarTextStyle": "white"
 			}
 		},
 		{
@@ -87,42 +143,6 @@
 			}
 		},
 		{
-			"path": "pages/showBind/index",
-			"style": {
-				"backgroundColor": "#ffffff",
-				"navigationBarTitleText": "账号绑定",
-				"navigationBarBackgroundColor": "#60A9FD",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/mine/index",
-			"style": {
-				"backgroundColor": "#ffffff",
-				"navigationBarTitleText": "个人中心",
-				"navigationBarBackgroundColor": "#F2F2F2",
-				"navigationBarTextStyle": "black"
-			}
-		},
-		{
-			"path": "pages/phone/index",
-			"style": {
-				"navigationBarTitleText": "绑定手机号码",
-				"navigationBarBackgroundColor": "#60A9FD",
-				"backgroundColor": "#F2F2F2",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/realName/index",
-			"style": {
-				"backgroundColor": "#ffffff",
-				"navigationBarTitleText": "实名认证",
-				"navigationBarBackgroundColor": "#60A9FD",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
 			"path": "pages/login/index",
 			"style": {
 				"backgroundColor": "#ffffff",
@@ -132,28 +152,10 @@
 			}
 		},
 		{
-			"path": "pages/myTry/index",
-			"style": {
-				"backgroundColor": "#ffffff",
-				"navigationBarTitleText": "我的试玩",
-				"navigationBarBackgroundColor": "#60A9FD",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
 			"path": "pages/userProtocol/index",
 			"style": {
 				"backgroundColor": "#ffffff",
 				"navigationBarTitleText": "用户协议",
-				"navigationBarBackgroundColor": "#60A9FD",
-				"navigationBarTextStyle": "white"
-			}
-		},
-		{
-			"path": "pages/tryPrediction/index",
-			"style": {
-				"backgroundColor": "#ffffff",
-				"navigationBarTitleText": "试玩预告",
 				"navigationBarBackgroundColor": "#60A9FD",
 				"navigationBarTextStyle": "white"
 			}

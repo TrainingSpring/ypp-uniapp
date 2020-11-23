@@ -146,3 +146,10 @@ ps: 小程序的background不能使用本地图片
 | align         | String |          | space-between | 对其方式: left==flex-start  right=flex-end  center   <br />或者其他flex  justifyContent   属性 |
 | margin        | String |          |               | 单项的margin数据  对应css的margin  如"0 10px 0 0"            |
 
+# storage
+
+## userInfo
+
+## loginInfo
+
+## phoneNumber

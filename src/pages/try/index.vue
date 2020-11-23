@@ -5,10 +5,10 @@
             <search-box style="font-size: 12px;" v-model="keyword" placeholder="搜索你感兴趣的" button="inside" :mode="2" @search="onSearch"></search-box>
         </view>
         <wuc-tab :tabList="tab.tabList" :tabCur="tab.cur" textFlex class="tab" @change="tabChange"></wuc-tab>
-        <t-radio :data="sort" @change=" radioChange"></t-radio>
+<!--        <t-radio :data="sort" @change=" radioChange"></t-radio>-->
         <swiper class="swiper" :current="swiper">
             <swiper-item v-for="item,index in tab.tabList">
-                <scroll-view style="height: calc(100vh - 292upx);" scroll-y @scrolltolower="nextPage">
+                <!--<scroll-view style="height: calc(100vh - 292upx);" scroll-y @scrolltolower="nextPage">
                     <t-item v-if="tab.data[index].length>0" v-for="itm,idx in tab.data[index]" :data="itm" @ontap="showDetail(itm)"></t-item>
                     <view v-if="tab.data[index].length == 0 || !tab.data[index]" class="none" style="display: flex; height: calc(100% - 90upx);justify-content: center;align-items: center;margin-top: 30upx;">
                         <image src="../../static/none.png" style="width: 80%;"></image>
@@ -17,8 +17,8 @@
                         <text class="cuIcon-emoji margin-right"></text><text>没有更多了</text>
                     </view>
                     <view class="cu-load cuIcon-loading loading text-black" v-if="loading"></view>
-                </scroll-view>
-                <view v-if="item.data"></view>
+                </scroll-view>-->
+                <game-sort :game-type="item"></game-sort>
             </swiper-item>
         </swiper>
     </view>
@@ -30,6 +30,7 @@
     import radio from "@/components/radio/index.vue"
     import titem from "@/components/item/index.vue"
     import Tools from "@/components/plugin/tool.ts"
+    import gameSort from "@/components/gameSort/index.vue"
     export default {
         name: "index",
         data(){
@@ -57,16 +58,26 @@
              * */
             init(){
                 this.loading = true;
+                let $this = this;
                 // 获取游戏类型
-                this.getTypeList().then(res=>{
+                this.util.getGameTypes(this).then(res=>{
+                    let tab = [
+                        {
+                            typeName:"全部",
+                            id:""
+                        }
+                    ];
+                    tab = tab.concat(res.result);
+                    $this.$set($this.tab,'tabList',tab);
                     // 渲染列表
-                    this.getGameList(0,1)
-                })
+                    this.getGameList(0,0,1)
+                });
+                //
             },
             /**
              * 获取类型列表
              * */
-             getTypeList(){
+            /* getTypeList(){
                 let $this = this;
                  return new Promise((resolve,reject)=>{
                      // 获取游戏类型
@@ -89,7 +100,7 @@
                          }
                      })
                 })
-            },
+            },*/
             /**
              * 搜索
              * */
@@ -145,6 +156,9 @@
                 this.tab.data[index] = [];
                 this.getGameList(index,e,1);
             },
+            /**
+             * 下一页
+             * */
             nextPage(){
                 let index = this.swiper;
                 let data = this.tab.tabList[index];
@@ -168,7 +182,8 @@
             "search-box":search,
             WucTab,
             TRadio:radio,
-            TItem:titem
+            TItem:titem,
+            gameSort
         },
     }
 </script>
@@ -184,7 +199,12 @@
             border-bottom: 1px solid #ccc;
         }
         .swiper{
+            // #ifndef MP-WEIXIN
             height: calc(100vh - 82upx - 90upx - 320upx);
+            // #endif
+            // #ifdef MP-WEIXIN
+            height: calc(100vh - 82upx - 90upx - 10upx);
+            // #endif
         }
     }
 </style>

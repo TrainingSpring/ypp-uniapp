@@ -3,8 +3,8 @@
     <view class="T-form">
        <view class="title">{{title}}</view>
        <view class="input" v-if="type!=='check'" style="flex:14;"><input :disabled="disabled" :type="type" :minlength="min" :maxlength="max" :value="value" :placeholder="placeholder" @input="changeInput"></view>
-       <view class="input" v-else style="flex:10;"><input :type="type" :minlength="min" :maxlength="max" :value="value" :placeholder="placeholder" @input="changeInput"></view>
-       <view class="check" v-if="type==='check'" @click="onCheck">获取验证码</view>
+       <view class="input" v-else style="flex:10;">               <input :type="type" :minlength="min" :maxlength="max" :value="value" :placeholder="placeholder" @input="changeInput"></view>
+       <view class="check" :class="down?'text-gray':'text-blue'" v-if="type==='check'" @tap="onCheck">{{!down?"获取验证码":down+"秒后重新发送"}}</view>
     </view>
 </template>
 
@@ -13,13 +13,18 @@
         name: "t-form",
         data(){
             return {
-
             }
         },
         mounted(){
 
         },
         props:{
+            down:{
+                type:Number,
+                default() {
+                    return 0;
+                }
+            },
             title:{
                 type:String,
                 required:true
@@ -27,8 +32,18 @@
             "type":String,
             "value":[String,Number],
             "placeholder":String,
-            max:[Number,String],
-            min:[Number,String],
+            max:{
+                type:[Number,String],
+                default(){
+                    return Number.MAX_SAFE_INTEGER;
+                }
+            },
+            min:{
+                type:[Number,String],
+                default() {
+                    return 0;
+                }
+            },
             disabled:{
                 type:Boolean,
                 default(){
@@ -93,6 +108,6 @@
         flex: 4;
         font-size: 12px;
         text-align: center;
-        color: #1B82D1;
+        white-space: nowrap;
     }
 </style>

@@ -2,17 +2,15 @@
 <template>
     <view class="try">
         <view class="search">
-            <search-box style="font-size: 12px;" v-model="keyword" placeholder="搜索你感兴趣的" button="inside" :mode="2"></search-box>
+            <search-box style="font-size: 12px;" v-model="keyword" placeholder="搜索你感兴趣的" button="inside" :mode="2" @search="onSearch"></search-box>
         </view>
         <wuc-tab :tabList="tab.tabList" :tabCur="tab.cur" textFlex class="tab" @change="tabChange"></wuc-tab>
-        <t-radio class="sort" padding="7.5px" style="border-bottom: 1px solid #eeeeee;" margin="0 10px 0 0" :data="sort" ></t-radio>
-        <swiper class="swiper" :current="swiper">
-            <swiper-item v-for="item in tab.tabList">
+<!--        <t-radio class="sort" padding="7.5px" t-key="text" style="border-bottom: 1px solid #eeeeee;" margin="0 10px 0 0" @change="radioChange" :data="sort" ></t-radio>-->
+        <swiper class="swiper" :current="swiper" disabled-touch>
+            <swiper-item v-for="item in tab.tabList" scroll-y @scrolltolower="nextPage">
                 <scroll-view>
-<!--                    <t-item v-for="i,index in item.data" :btn-state="i.state" :btn-text="i.state===0?'继续试玩':i.state===1?'提交任务':'已提交'" :data="i"></t-item>-->
-                    <t-item v-for="i,index in item.data"  btn-text="继续试玩" :data="i" @ontap="showDetail(item)"></t-item>
+                    <game-sort :sort="sort" :type="1" :current-sort="curSort" :game-type="item"> </game-sort>
                 </scroll-view>
-                <view v-if="item.data"></view>
             </swiper-item>
         </swiper>
 <!--    提示模态框    -->
@@ -33,91 +31,100 @@
     import WucTab from '@/components/plugin/wuc-tab/wuc-tab.vue';
     import radio from "@/components/radio/index.vue"
     import titem from "@/components/item/index.vue"
-    import Tools from "@/components/plugin/tool.ts"
+    import gameSort from "@/components/gameSort/index.vue"
     export default {
         name: "index",
         data(){
             return{
                 keyword:null,
                 tab:{
-                    tabList:[
-                        {
-                            name:"免安装",
-                            data:[
-                                {
-                                    icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                                    name:"游戏名",        // 游戏名
-                                    desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                                    progress:80,    // 进度
-                                    money:Tools.formatMoney(1000),     // 赚取金额
-                                    server:"二区",  // 区服
-                                    recommend:true, // 推荐
-                                    newGame:true,   // 新游戏
-                                    newTask:true,   // 新任务
-                                    id:123,         // 任务id
-                                    state:0,         // 任务状态
-                                },
-                                {
-                                    icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                                    name:"游戏名",        // 游戏名
-                                    desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                                    progress:80,    // 进度
-                                    money:Tools.formatMoney(1000),     // 赚取金额
-                                    server:"五区",  // 区服
-                                    recommend:true, // 推荐
-                                    newGame:false,   // 新游戏
-                                    newTask:true,   // 新任务
-                                    id:123,         // 任务id
-                                    state:0,         // 任务状态
-                                },
-                                {
-                                    icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                                    name:"游戏名",        // 游戏名
-                                    desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                                    progress:80,    // 进度
-                                    money:Tools.formatMoney(12.5),     // 赚取金额
-                                    server:"二区",  // 区服
-                                    recommend:false, // 推荐
-                                    newGame:true,   // 新游戏
-                                    newTask:true,   // 新任务
-                                    id:123,         // 任务id
-                                    state:1,         // 任务状态
-                                },
-                                {
-                                    icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                                    name:"游戏名",        // 游戏名
-                                    desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                                    progress:80,    // 进度
-                                    money:Tools.formatMoney(555.6),     // 赚取金额
-                                    server:"二区",  // 区服
-                                    recommend:false, // 推荐
-                                    newGame:true,   // 新游戏
-                                    newTask:false,   // 新任务
-                                    id:123,         // 任务id
-                                    state:2,         // 任务状态
-                                },
-                            ]
-                        },
-                        {name:"角色"},
-                        {name:"回合"},
-                        {name:"策略"},
-                        {name:"休闲"},
-                        {name:"卡牌"},
-                        {name:"动作"}
-                    ],
-                    cur:0
+                    tabList:[],
+                    data:[],
+                    cur:0,
+                    sort:[]
                 },
                 swiper:0,
-                sort:["默认排序","最近试玩","即将到期","待提交","审核中","已完成","已失效"],
+                curSort:0,
+                notMore:[],
+                loading:false,
+                sort:[
+                    {text:"默认排序",value:0},
+                    {text:"最近试玩",value:1},
+                    {text:"即将到期",value:2}
+                ],
                 modal:{
                     show:false,
                 }
             }
         },
+        mounted(){
+            this.init();
+        },
         methods:{
+            init(){
+                let $this = this;
+                this.util.getGameTypes($this).then(res=>{
+                    let tab = [
+                        {
+                            createTime: null,
+                            id: null,
+                            imagePath: null,
+                            parentId: 0,
+                            typeName: "全部",
+                        }
+                    ];
+                    tab = tab.concat(res.result);
+                    console.log("//////////////////////////////////",tab);
+                    $this.$set($this.tab,"tabList",tab);
+                   // $this.$set($this.tab,"tabList",res.result);
+                    $this.getGameList(0,0,1);
+                })
+
+            },
+            /**
+             * @desc 获取对应的游戏列表
+             * @params type:Number  游戏分类数组中的第type个
+             *          sort: 排序 0,1,2,3
+             *          page:页码
+             * */
+            getGameList(type,sort,page){
+                let $this = this;
+                console.log(type,$this.tab.tabList[type].id);
+                let uid = uni.getStorageSync("loginInfo").uid;
+                $this.util.getGameInfo({
+                    url:"/yppGame/get_sort_user_games_page",
+                    gameType:$this.tab.tabList[type].id,
+                    sortType:sort,
+                    page,
+                    uid
+                }).then((res)=>{
+                    res.result.records.page = page;
+                    let data = $this.tab.data[type];
+                    if (!data)
+                        data = res.result.records;
+                    else
+                        data = data.concat(res.result.records);
+                    $this.loading = false;
+                    $this.$set($this.tab.data,type,data);
+                    $this.notMore[type] =  res.result.pages>=res.result.records.page;
+                    $this.loading = false;
+                })
+            },
             tabChange(index){
                 this.tab.cur = index;
                 this.swiper = index;
+                let sort = this.tab.sort[index];
+                if(sort === undefined){
+                    this.tab.sort[index] = sort = 0;
+                    this.getGameList(index,sort,1);
+                }
+            },
+            /**
+             * 单选按钮更改
+             */
+            radioChange(e){
+                this.curSort = e.index;
+                this.$children[5].$emit('change',this.curSort,this.tab.tabList[this.swiper])
             },
             hideModal(){
                 this.modal.show = false;
@@ -131,13 +138,22 @@
                     url:"../taskInfo/index",
                     events:data
                 });
-            }
+            },
+            /**
+             * 搜索
+             * */
+            onSearch(){
+                uni.navigateTo({
+                    url:"/pages/search/index?key="+this.keyword
+                })
+            },
         },
         components:{
             "search-box":search,
             WucTab,
             TRadio:radio,
-            TItem:titem
+            TItem:titem,
+            gameSort
         },
     }
 </script>

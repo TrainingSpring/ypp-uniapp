@@ -13,7 +13,7 @@
                     <view class="wx-info">
                         <view class="left">
                             <view class="circle-white">
-                                <image :src="swiperList[0].head" style="width: 100%;height: 100%;"></image>
+                                <image :src="swiperList[0].avatar" style="width: 100%;height: 100%;"></image>
                             </view>
                         </view>
                         <view class="right">
@@ -32,7 +32,7 @@
                         </view>
                         <view class="earning-item">
                             <view class="money">{{swiperList[0].earning[2]}}</view>
-                            <view class="text">收益余额</view>
+                            <view class="text">总试玩(个)</view>
                         </view>
                     </view>
                 </swiper-item>
@@ -85,13 +85,9 @@
                 userInfo:undefined,
                 swiperList:[
                     {
-                        head:"../../static/home/head.png",
+                        avatar:"../../static/home/head.png",
                         nick:"微信昵称",
-                        earning:[
-                            22.23,
-                            2.55,
-                            0.9
-                        ]
+                        earning:[]
                     },
                     "../../static/home/banner1.jpg",
                     "../../static/home/banner2.png"
@@ -132,8 +128,65 @@
 		        let $this = this;
 		        // 获取用户登录信息
                 this.userInfo = uni.getStorageSync("userInfo");
+                let loginInfo = uni.getStorageSync("loginInfo");
+                // 服务器用户信息获取
+                if(this.userInfo){
+                    uni.request({
+                        url:$this.util.getApiUrl("/yppUser/get_user_info"),
+                        data:{
+                            uid:loginInfo.uid
+                        },
+                        method:"POST",
+                        success:function (result) {
+                            let data = result.data;
+                            let info = data.result;
+                            console.log(info);
+                            if (data.code === 200) {
+                                $this.$set($this.swiperList,0,{
+                                    avatar:info.avatar,
+                                    nick:info.nickName,
+                                    sex:info.sex,
+                                    earning:[
+                                    info.todayIncome,
+                                    info.income,
+                                    info.countTask
+                                ]
+                            })
+                               /* $this.swiperList[0] = {
+                                    avatar:info.avatar,
+                                    nick:info.nickName,
+                                    sex:info.sex,
+                                    earning:[
+                                        info.todayIncome,
+                                        info.income,
+                                        info.countTask
+                                    ]
+                                };*/
+                                // 检测是否实名:
+                                uni.request({
+                                    url:$this.util.getApiUrl("/yppUser/check_user_is_realName_authentication"),
+                                    method:"POST",
+                                    data:{
+                                        uid:loginInfo.uid,
+                                    },
+                                    success(response){
+                                        let code = response.data.code;
+                                        if (code === 200) {
+                                            $this.isRealName = response.data.result;
+                                        }else{
+                                            $this.util.showInfo(0,response.data);
+                                        }
+                                    }
+                                });
+                                uni.setStorage({
+                                    key:"phoneNumber",
+                                    data:info.phone
+                                })
+                            }
+                        }
+                    })
+                }
                 // 获取今日推荐信息
-                console.log($this.util.getApiUrl("/yppGame/get_index_games"))
                 uni.request({
                     url:$this.util.getApiUrl("/yppGame/get_index_games"),
                     method:"POST",
@@ -212,8 +265,7 @@
              */
             showDetail(data:Object){
                 uni.navigateTo({
-                    url:"../taskInfo/index",
-                    events:data
+                    url:"../taskInfo/index?data="+JSON.stringify(data),
                 });
             }
 		}

@@ -16,44 +16,41 @@
     export default {
         name: "index",
         mounted(){
+            let $this = this;
             // 获取微信用户信息
-            setTimeout(function(){
-                // #ifdef MP-WEIXIN
-                uni.authorize({
-                    scope:"scope.userInfo",
-                    success:function () {
-                        uni.getUserInfo({
-                            success:function (res) {
-                                uni.setStorage({
-                                    key:"userInfo",
-                                    data:res,
-                                    success:function(){
-                                        uni.switchTab({
-                                            url:"/pages/index/index"
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                    },
-                    fail:function (err) {
-                        uni.setStorage({
-                            key:"userInfo",
-                            data:undefined,
-                            success:function(){
-                                uni.switchTab({
-                                    url:"/pages/index/index"
-                                })
+            // #ifdef MP-WEIXIN
+            uni.login({
+                success(res){
+                    if (res.errMsg === "login:ok") {
+                        uni.request({
+                            url:$this.util.getApiUrl("/yppUser/login_wechat"),
+                            method:"POST",
+                            data:{
+                                wechatCode:res.code
+                            },
+                            success(suc){
+                                let data = suc.data;
+                                if (data.code === 200) {
+                                    uni.setStorage({
+                                        key:"loginInfo",
+                                        data:data.result
+                                    })
+                                }else{
+                                    $this.util.showInfo(0,data);
+                                }
                             }
                         })
                     }
-                })
-                // #endif
-                // #ifndef MP-WEIXIN
+                },
+                fail(err){
+
+                }
+            });
+            // #endif
+            setTimeout(function(){
                 uni.switchTab({
                     url:"/pages/index/index"
                 })
-                // #endif
             },2000)
 
 

@@ -1,7 +1,7 @@
 <!--单选按钮-->
 <template>
     <view class="T-radio" :style="{justifyContent:align==='left'?'flex-start':align === 'center'?'center':align === 'right'?'flex-end':align}">
-        <view class="item" :style="{backgroundColor:bgColor,color:index===cur?selectedColor:fontColor,padding:padding,margin:margin}" v-for="item,index in data" :class="[itemClass]" @tap="selected(index)">{{item}}</view>
+        <view class="item" :style="{backgroundColor:bgColor,color:index===cur?selectedColor:fontColor,padding:padding,margin:margin}" v-for="item,index in data" :class="[itemClass]" @tap="selected(item,index)">{{!tKey?item:item[tKey]}}</view>
     </view>
 </template>
 
@@ -14,12 +14,15 @@
             }
         },
         mounted(){
-
+            this.cur = this.current;
         },
         methods:{
-            selected(index){
+            selected(item,index){
                 this.cur = index;
-                this.$emit("change",index);
+                this.$emit("change",{
+                    data:item,
+                    index
+                });
             }
         },
         props:{
@@ -27,6 +30,12 @@
                 type:Array,
                 default(){
                     return [];
+                }
+            },
+            tKey:{
+                type:String,
+                default(){
+                    return undefined
                 }
             },
             itemClass:String,
@@ -60,7 +69,13 @@
                     return "space-between"
                 }
             },
-            margin:String
+            margin:String,
+            current:{
+                type:Number,
+                default(){
+                    return 0;
+                }
+            }
         }
     }
 </script>

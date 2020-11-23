@@ -32,7 +32,8 @@
             <view class="cu-item arrow" @tap="selectBank">
                 <view class="content">
                     <text class="cuIcon-card text-blue"></text>
-                    <text class="text-grey">{{bank.name+(bank.number?`(${bank.number})`:'')}}</text>
+                    <text class="text-grey" v-if="!!bank.bankName">{{bank.bankName+`(${bank.bankCardNum})`}}</text>
+                    <text class="text-grey" v-if="!bank.bankName">请选择银行卡</text>
                 </view>
             </view>
         </view>
@@ -45,9 +46,9 @@
         <view class="btn-group">
             <button class="cu-btn shadow bg-blue lg" @tap="goWithdraw">立即提现</button>
         </view>
-        <view class="real text-gray">
+        <!--<view class="real text-gray">
             完成实名认证,保障您的资金安全. <navigator src="pages/realName/index">去认证 <text class="cuIcon-right"></text></navigator>
-        </view>
+        </view>-->
         <!--     模态框  提现提示   -->
         <view class="cu-modal modal-withdraw" :class="modal.hint?'show':''">
             <view class="cu-dialog">
@@ -89,7 +90,7 @@
                     <view class="modal-top">
                         <view class="left">
                             <view class="modal-title">我的银行卡</view>
-                            <navigator :url="'../addBankCard/index'+JSON.stringify(this.withdraw.tempBank)" class="modify">修改银行卡信息 <text class="cuIcon-right"></text></navigator>
+                            <navigator v-if="bankList.length>0" :url="'../addBankCard/index?bank='+JSON.stringify(this.withdraw.tempBank)" class="modify">修改银行卡信息 <text class="cuIcon-right"></text></navigator>
                         </view>
                         <view class="right">
                             <view class="cu-btn bg-white text-blue" @tap="confirmBank">确认</view>
@@ -97,14 +98,14 @@
                     </view>
                 </view>
                 <view class="padding-sm">
-                    <picker-view v-if="picker.visible" mask-class="picker-mask"  indicator-style="height:100upx;" :value="picker.value" @change="bindChange">
+                    <picker-view v-if="picker.visible && bankList.length>0" mask-class="picker-mask"  indicator-style="height:100upx;" :value="picker.value" @change="bindChange">
                         <picker-view-column>
-                            <view class="list" v-for="(item,index) in bankList" :key="index">
+                            <view class="list light bg-blue" v-for="(item,index) in bankList" :key="index">
                                 <view class="left">
                                     <view class="icon"><text class="cuIcon-card text-gray"></text></view>
-                                    <view class="card-info">
-                                        <view class="name">{{item.name}}</view>
-                                        <view class="number">(尾号{{item.number}}储蓄卡)</view>
+                                    <view class="card-info text-black">
+                                        <view class="name">{{item.bankName}}</view>
+                                        <view class="number">({{item.bankCardNum}}储蓄卡)</view>
                                     </view>
                                 </view>
 
@@ -144,20 +145,7 @@
                     number:null,
                     name:"请选择银行卡"
                 },
-                bankList:[
-                    {
-                        name:"中国银行",
-                        number:"0222"
-                    },
-                    {
-                        name:"中国农业银行",
-                        number:"0222"
-                    },
-                    {
-                        name:"中国建设银行",
-                        number:"0222"
-                    },
-                ],
+                bankList:[],
                 picker:{
                     visible:true,
                     indicatorStyle:`height: ${Math.round(uni.getSystemInfoSync().screenWidth/(750/100))}px;`,
@@ -169,24 +157,68 @@
                     money:null,
                     // 临时银行卡信息
                     tempBank:undefined
-                }
+                },
+                loginInfo:uni.getStorageSync("loginInfo"),
 
             }
         },
+        onShow(){
+            this.getBankList();
+            console.log("获取银行卡")
+        },
         mounted(){
             this.withdraw.tempBank = this.bankList[0]
+            this.getBalance();
         },components:{
             card,
             bgi
         },
         methods: {
             /**
+             * @desc 获取用户银行卡列表
+             **/
+            getBankList(){
+                let $this = this;
+                uni.request({
+                    url:$this.util.getApiUrl("/yppUser/get_user_bankCard_list"),
+                    method:"POST",
+                    data:{
+                        uid:$this.loginInfo.uid
+                    },
+                    success(res){
+                        let data = res.data;
+                        if (data.code === 200) {
+                            $this.bankList = data.result;
+                            console.log(data);
+                        }else{
+                            $this.util.showInfo(0,data);
+                        }
+                    },
+                    fail:function (err) {
+                        console.log(err)
+                    }
+                })
+            },
+             /**
+             * @desc 获取余额详情
+             * */
+            getBalance(){
+                let $this = this;
+                uni.showLoading({
+                    title:"请稍后..."
+                });
+                this.util.getUserInfo(this).then(res=>{
+                    $this.$set($this,"balance",parseFloat(res.result.balance));
+                   uni.hideLoading();
+                })
+            },
+            /**
              * 银行卡滑动选择
              * */
             bindChange: function (e) {
                 const val = e.detail.value[0];
                 this.$set(this.picker,"selected",val);
-                this.withdraw.tempBank = this.bankList[val]
+                this.withdraw.tempBank = this.bankList[val];
                 console.log(this.withdraw)
             },
             /**
@@ -227,6 +259,7 @@
              * 选择银行卡按钮点击
              */
             selectBank(){
+                this.withdraw.tempBank = this.bankList[0];
                 this.$set(this.modal,'bank',true)
             },
             /**

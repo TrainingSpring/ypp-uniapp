@@ -7,7 +7,7 @@
                 <view class="wx-info">
                     <view class="left">
                         <view class="circle-white">
-                            <image :src="userInfo.head" style="width: 100%;height: 100%;"></image>
+                            <image :src="userInfo.avatar" style="width: 100%;height: 100%;"></image>
                         </view>
                         <view class="decoration">
                             <image src="../../static/mine/medal.png"></image>
@@ -47,19 +47,19 @@
                     </navigator>
                 </view>
                 <view class="menu-item">
-                    <navigator url="/pages/myTry/index">
+                    <navigator url="/pages/taskStatus/index?status=0">
                         <view class="icon"><image src="../../static/mine/icon_2.png"></image></view>
                         <view class="text">待提交</view>
                     </navigator>
                 </view>
                 <view class="menu-item">
-                    <navigator url="/pages/myTry/index">
+                    <navigator url="/pages/taskStatus/index?status=1">
                         <view class="icon"><image src="../../static/mine/icon_3.png"></image></view>
                         <view class="text">审核中</view>
                     </navigator>
                 </view>
                 <view class="menu-item">
-                    <navigator url="/pages/myTry/index">
+                    <navigator url="/pages/taskStatus/index?status=2">
                         <view class="icon"><image src="../../static/mine/icon_4.png"></image></view>
                         <view class="text">已完成</view>
                     </navigator>
@@ -126,7 +126,7 @@
                     </view>
                 </view>
                 <view class="menu-item">
-                    <view url="/pages/myTry/index">
+                    <view>
                         <view class="icon"><image src="../../static/mine/icon_4.png"></image></view>
                         <view class="text">已完成</view>
                     </view>
@@ -137,7 +137,7 @@
         <view v-if="!!userInfo" class="cu-list menu">
 
             <view class="cu-item">
-                <navigator class="content" hover-class="none" url="../phone/index">
+                <navigator class="content" hover-class="none" url="../showBind/index">
                     <text class="cuIcon-mobile text-blue"></text>
                     <text class="text-grey">账号绑定</text>
                 </navigator>
@@ -146,12 +146,17 @@
                 </view>
             </view>
             <view class="cu-item">
-                <navigator class="content" hover-class="none" url="../realName/index">
+                <navigator v-if="!isRealName" class="content" hover-class="none" url="../realName/index">
                     <text class="cuIcon-my text-blue"></text>
                     <text class="text-grey">实名认证</text>
                 </navigator>
+                <view v-if="isRealName" class="content">
+                    <text class="cuIcon-my text-blue"></text>
+                    <text class="text-grey">实名认证</text>
+                </view>
                 <view class="action">
-                    <text class="cuIcon-right text-gray"></text>
+                    <text class="text-gray">已实名</text>
+<!--                    <text class="cuIcon-right text-gray"></text>-->
                 </view>
             </view>
             <view class="cu-item" >
@@ -250,7 +255,7 @@
                 userInfo:
                 undefined
                 //     {
-                //     head:"../../static/home/head.png",
+                //     avatar:"../../static/home/head.png",
                 //     nick:"微信昵称",
                 //     balance:tools.formatMoney(200),
                 //     earning:[
@@ -261,10 +266,72 @@
                 // }
                 ,
                 msg:false,
-                hint:false
+                hint:false,
+                isRealName:false
             }
         },
+        onShow(){
+            this.init();
+        },
         methods:{
+            /**
+             * 页面数据初始化
+             * */
+            init(){
+                let userInfo = uni.getStorageSync("userInfo");
+                let loginInfo = uni.getStorageSync("loginInfo")
+                let $this = this;
+                if (userInfo)
+                    uni.request({
+                        url:$this.util.getApiUrl("/yppUser/get_user_info"),
+                        data:{
+                            uid:loginInfo.uid
+                        },
+                        method:"POST",
+                        success:function (result) {
+                            let data = result.data;
+                            let info = data.result;
+                            if (data.code === 200) {
+                                $this.userInfo = {
+                                    avatar:info.avatar,
+                                    nick:info.nickName,
+                                    balance:info.balance,
+                                    sex:info.sex,
+                                    earning:[
+                                        info.todayIncome,
+                                        info.income,
+                                        info.countTask
+                                    ]
+                                };
+                                // 检测是否实名:
+                                uni.request({
+                                    url:$this.util.getApiUrl("/yppUser/check_user_is_realName_authentication"),
+                                    method:"POST",
+                                    data:{
+                                        uid:loginInfo.uid,
+                                    },
+                                    success(response){
+                                        let code = response.data.code;
+                                        if (code === 200) {
+                                            $this.isRealName = response.data.result;
+                                        }else{
+                                            $this.util.showInfo(0,response.data);
+                                        }
+                                    }
+                                });
+                                uni.setStorage({
+                                    key:"phoneNumber",
+                                    data:info.phone
+                                })
+                            }
+                        }
+                    })
+
+
+            },
+            /**
+             * 清除缓存
+             * */
             clearCache(){
                 uni.showModal({
                     title:"提示",
@@ -368,6 +435,11 @@
                 .nick{
                     font-size: 17px;
                     font-weight: 500;
+                    overflow: hidden;
+                    width: 7em;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+
                 }
                 .recommend{
                     padding:3px 9px;

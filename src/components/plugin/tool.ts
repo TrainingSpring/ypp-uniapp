@@ -71,7 +71,7 @@ Tools.prototype.checkInput=function(type:string,data:any){
 			reg = /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/;
 		break;
 		case "id":
-			reg = /^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|[X,x]){1}$/;
+			reg = /^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|[X,x])$/;
 		break;
 		case "bank":
 			reg = /^([1-9]{1})(\d{16}|\d{15}|\d{18})$/;
@@ -138,6 +138,39 @@ Tools.prototype.mixinObject = function(keys:string[],values:any[]){
 		temp[keys[i]] = values[i]
 	}
 	return temp;
+};
+
+/**
+ * @desc 格式化时间
+ * @param date
+ * @param type  0 以"-"分隔  1: 以"/"分隔 2:以文字分隔
+ * @param fmt
+ */
+Tools.prototype.formatDate = function(date:any,type:number,fmt:string = "yyyy-MM-dd hh:mm:ss") {
+	let time = new Date(date);
+	let mart = type === 0?"-":type === 1?"/":null;
+	let year = time.getFullYear(); // 年
+	let month = time.getMonth()+1;  // 月
+	let day = time.getDate();  // 日
+	let hour = time.getHours();  // 时
+	let minute = time.getMinutes(); // 分
+	let second = time.getSeconds(); // 秒
+	var o = {
+		"M+": month, // 月份
+		"d+": day, // 日
+		"h+": hour, // 小时
+		"m+": minute, // 分
+		"s+": second, // 秒
+		"q+": Math.floor((minute + 3) / 3), // 季度
+		"S": time.getMilliseconds() // 毫秒
+	};
+	if (/(y+)/.test(fmt))
+		fmt = fmt.replace(RegExp.$1, (year + "").substr(4 - RegExp.$1.length));
+	for (var k in o)
+		if (new RegExp("(" + k + ")").test(fmt)) { // @ts-ignore
+			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+		}
+	return fmt;
 }
 	// @ts-ignore
 let t = new Tools();

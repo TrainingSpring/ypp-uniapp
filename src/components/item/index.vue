@@ -2,7 +2,6 @@
 <template>
     <view class="t-game-item" :class="itemClass" @tap="clickThis(data)">
         <view class="logo" :style="{'background':'url('+data.gameLogo+') no-repeat',backgroundSize:'cover'}">
-
             <view v-if="data.gameTag" class="new">
                 NEW
             </view>
@@ -18,14 +17,15 @@
                 <view v-if="data.isNewServer" class="iconfont icon-zuixin" style="color: red;"></view>
             </view>
         </view>
-        <view class="progress">
+        <view class="progress" v-if="showProgress">
             <text>{{progress}}%</text>
             <progress :percent="progress" :border-radius="10" active></progress>
         </view>
+        <view class="progress" v-if="!showProgress"></view>
         <view class="get-money">
             <bgi v-if="btnType==0" class="btn" :src="'../../static/btn/'+(btnState==0?'btn.png':btnState === 1?'btn_1.png':'btn_2.png')"><view style="width:117upx;margin-left: 8upx;text-align: center;">{{btnText}}</view></bgi>
             <view v-if="btnType==1" class="btn" style="background: #95C9FC;border-radius: 23upx;"><view style="text-align: center;">{{btnText}}</view></view>
-            <view class="money">+{{(data.awardMoneys)}}元</view>
+            <view class="money">+{{(data.money) || data.awardMoney}}元</view>
         </view>
     </view>
 </template>
@@ -40,7 +40,7 @@
         },
         computed:{
             progress :function(){
-                return parseInt(this.data.remainNums)/parseInt(this.data.taskNums)*100
+                return Math.floor(Math.floor(parseInt(this.data.remainNums)/parseInt(this.data.taskNums)*10000))/100
             }
         },
 
@@ -68,6 +68,12 @@
                 type:[String,Number],
                 default(){
                     return 0;// 按钮状态， 0 默认图片背景  1  纯色背景
+                }
+            },
+            showProgress:{
+                type:Boolean,
+                default(){
+                    return true
                 }
             }
         },

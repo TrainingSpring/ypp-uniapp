@@ -27,6 +27,7 @@
         margin-top: 14upx;
         box-shadow:1px 1px 2px 2px #eee;
         padding: 10upx 34upx;
+        position: relative;
         .title{
             color: #000;
             font-size: 28upx;

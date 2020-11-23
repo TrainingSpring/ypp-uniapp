@@ -1,33 +1,40 @@
 <template>
-    <view class="taskList">
-        <view class="task-item" v-for="(item,index) in data">
+    <view class="taskList padding-left padding-right" >
+
+        <view class="task-item" >
             <view class="left">
                 <view class="top">
                     <text class="iconfont icon-task"></text>
-                    <text class="task-title">{{item.taskName}}</text>
-                    <text class="iconfont question icon-yiwen" @tap="taskExplain(item)"></text>
+                    <text class="task-title">{{data.taskName}}</text>
+                    <text class="iconfont question icon-yiwen" @tap="taskExplain(data)"></text>
                 </view>
                 <view class="bottom">
-                    {{item.submitStatus==-1 ?"待完成":item.submitStatus == 0?"完成中":item.submitStatus == 1 ?"审核中":item.submitStatus==2?"审核结算":"失败"}}
+                    {{data.submitStatus==-1 ?"待完成":data.submitStatus == 0?"完成中":data.submitStatus == 1 ?"审核中":data.submitStatus==2?"审核结算":"失败"}}
                 </view>
             </view>
             <view class="center">
                 <view class="top">1</view>
-                <view class="bottom">
-                    试玩名额：{{item.taskNum - item.remainNum}}/{{item.taskNum}}
+                <view class="bottom" v-if="type === 0">
+                    试玩名额：{{data.taskNum - data.remainNum}}/{{data.taskNum}}
+                </view>
+                <view v-if="type === 1">
+                    {{data.gameName}}({{data.serverName}})
                 </view>
             </view>
             <view class="right">
                 <view class="top">
-                    +{{item.awardMoney}}元
+                    +{{data.money||data.awardMoney}}元
                 </view>
                 <view class="bottom">
-                    <view class="btn" :class="item.submitStatus == -1?'bg-blue':item.submitStatus==0?'bg-green':'bg-grey'" @tap="submit(item,index)">{{item.submitStatus == -1?"立即领取":"立即提交"}}</view>
+                    <view class="btn" :class="data.submitStatus == -1?'bg-blue':data.submitStatus==0?'bg-green':'bg-grey'" @tap="submit(data,index)">{{data.submitStatus == -1?"立即领取":"立即提交"}}</view>
+                    <!--<view>
+                        {{item.endTime.split(":")[0]}}时后结束
+                    </view>-->
                 </view>
             </view>
         </view>
         <!--    领取以及提交任务模态框    -->
-        <hint
+        <hint v-if="type === 0"
                 :show="hint.show"
                 :content="hint.content"
                 :icon="hint.icon"
@@ -75,14 +82,38 @@
             }
 
         },
+
         mounted(){
-            debugger;
+            console.log(this.data);
         },
         components:{
             hint
         },
+        watch:{
+            data(o,n){
+                console.log("][][][][][][][][][", o, n);
+            }
+        },
         methods:{
-
+            // 因为获取到的时间是:123:12:12 这种格式
+            // 所以格式化为时分秒
+            formatEndTime(str){
+                let arr = str.split(":");
+                if (arr.length === 3)
+                    return arr[0]+"时"+arr[1]+"分"+arr[2]+"秒";
+                else if(arr.length === 2 )
+                    return "0时"+arr[0]+"分"+arr[1]+"秒";
+                else if(arr.length === 1 )
+                    return "0时0分"+arr[0]+"秒";
+            },
+            /**
+             * 点击任务项
+             * */
+            tapItem(item){
+                if (this.type === 1){
+                    let gameId = item.gameId;
+                }
+            },
             /**
              * 点击任务上的问号 模态框展示
              */
@@ -93,6 +124,12 @@
                 this.taskModal.condition = data.taskDesc;
                 this.taskModal.endTime = data.endTime;
 
+            },
+            /**
+             *  当提示框的按钮被点击时
+             */
+            hintClick(val){
+                this.hint.show = false;
             },/**
              * 提交任务
              */
@@ -100,29 +137,18 @@
                 let state = typeof data.submitStatus === "string"?parseInt(data.submitStatus):data.submitStatus;
                 let hint = this.hint;
                 let $this = this;
-                // 打开模态框
                 if (state === 1 || state === 2)return;
                 let setInfo = (options={})=>{
-                    console.log(this.hint);
                     this.hint = Object.assign(hint,options)
                 };
                 uni.showLoading({
                     title:"请稍后"
                 });
-                console.log("状态",state);
                 if(state === 0){ // 提交任务
                     // 提交ajax
 
                     let hintState = 1;   // 0失败
                     uni.hideLoading();
-                    $this.hint.show = true;
-                    setInfo({
-                        icon:"../../static/hint/success.png",
-                        type:1,
-                        confirm:"确认提交",
-                        cancel:"暂不提交",
-                        button:'success'
-                    });
                     this.hintClick = function (res) {
                         if (res === 0) this.hint.show = false;
                         else {
@@ -140,6 +166,8 @@
                                     $this.hint.show = false;
                                     if (res.data.code === 200) {
                                         uni.hideLoading();
+                                        console.log($this.data[index]);
+                                        // $this.data[index]["submitStatus"] = 1;
                                         $this.util.showInfo(1,res.data);
                                     }else{
                                         $this.util.showInfo(0,res.data);
@@ -147,7 +175,30 @@
                                 }
                             })
                         }
+                    };
+                    if ($this.type === 0){
+                        $this.hint.show = true;
+                        setInfo({
+                            icon:"../../static/hint/success.png",
+                            type:1,
+                            confirm:"确认提交",
+                            cancel:"暂不提交",
+                            button:'success'
+                        });
+                    }else{
+                        uni.showModal({
+                            title:"确认提交?",
+                            confirmText:"确认",
+                            cancelText:"取消",
+                            success:function (btn) {
+                                if (btn.cancel)
+                                    $this.hintClick(0);
+                                else
+                                    $this.hintClick(1);
+                            }
+                        })
                     }
+
                 }else if(state === -1){ // 领取任务
                     uni.request({
                         url:$this.util.getApiUrl("/yppTask/receive_task"),
@@ -186,9 +237,15 @@
         },
         props:{
             data:{
-                type:Array,
+                type:[Array,Object],
                 default(){
                     return []
+                }
+            },
+            type:{
+                type:Number,
+                default(){
+                    return 0;
                 }
             }
         }
