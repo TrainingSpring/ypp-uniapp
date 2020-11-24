@@ -7,7 +7,7 @@
         <view class="banner">
             <swiper :circular="true" :autoplay="true" :interval="5000">
                 <swiper-item class="user-info banner" v-if="!!userInfo">
-                    <image src="../../static/home/banner.png" class="background">
+                    <image :src="util.getStaticUrl('home/banner.png')" class="background">
 
                     </image>
                     <view class="wx-info">
@@ -45,15 +45,15 @@
         <!--        menu        -->
         <view class="menu">
             <view class="menu-item" @tap="toNewPage('../try/index')">
-                <view class="icon"><image src="../../static/home/menu1.png"></image></view>
+                <view class="icon"><image :src="util.getStaticUrl('home/menu1.png')"></image></view>
                 <view class="text">新用户专享</view>
             </view>
             <view class="menu-item" @tap="toNewPage('../myTry/index')">
-                <view class="icon"><image src="../../static/home/menu2.png"></image></view>
+                <view class="icon"><image :src="util.getStaticUrl('home/menu2.png')"></image></view>
                 <view class="text">我的试玩</view>
             </view>
             <view class="menu-item" @tap="toNewPage('../tryPrediction/index')">
-                <view class="icon"><image src="../../static/home/menu3.png"></image></view>
+                <view class="icon"><image :src="util.getStaticUrl('home/menu3.png')"></image></view>
                 <view class="text">试玩计划</view>
             </view>
         </view>
@@ -76,6 +76,7 @@
     import search from "../../components/plugin/mehaotian-search-revision/mehaotian-search-revision.vue"
     import Tools from "../../components/plugin/tool"
     import titem from "../../components/item/index.vue"
+    import util from "../../components/plugin/util"
 
     export default Vue.extend({
 		data() {
@@ -85,15 +86,15 @@
                 userInfo:undefined,
                 swiperList:[
                     {
-                        avatar:"../../static/home/head.png",
+                        avatar:util.getStaticUrl("home/head.png"),
                         nick:"微信昵称",
                         earning:[]
                     },
-                    "../../static/home/banner1.jpg",
-                    "../../static/home/banner2.png"
+                    util.getStaticUrl("home/banner1.jpg"),
+                    util.getStaticUrl("home/banner2.png")
                 ],
                 today:[
-                    {
+                  /*  {
                         icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
                         gameName:"游戏名",        // 游戏名
                         desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
@@ -105,12 +106,16 @@
                         newTask:true,   // 新任务
                         gameId:123,         // 游戏id
                         serverId:1, // 区服id
-                    }
-                ]
+                    }*/
+                ],
+                isRealName:null
 
 			}
 		},
         mounted(){
+		    this.init();
+        },
+        onShow(){
 		    this.init();
         },
         components:{
@@ -132,13 +137,13 @@
                 // 服务器用户信息获取
                 if(this.userInfo){
                     uni.request({
-                        url:$this.util.getApiUrl("/yppUser/get_user_info"),
+                        url:util.getApiUrl("/yppUser/get_user_info"),
                         data:{
                             uid:loginInfo.uid
                         },
                         method:"POST",
                         success:function (result) {
-                            let data = result.data;
+                            let data:any = result.data;
                             let info = data.result;
                             console.log(info);
                             if (data.code === 200) {
@@ -164,17 +169,17 @@
                                 };*/
                                 // 检测是否实名:
                                 uni.request({
-                                    url:$this.util.getApiUrl("/yppUser/check_user_is_realName_authentication"),
+                                    url:util.getApiUrl("/yppUser/check_user_is_realName_authentication"),
                                     method:"POST",
                                     data:{
                                         uid:loginInfo.uid,
                                     },
                                     success(response){
-                                        let code = response.data.code;
-                                        if (code === 200) {
-                                            $this.isRealName = response.data.result;
+                                        let datas:any = response.data;
+                                        if (datas.code === 200) {
+                                            $this.isRealName = datas.result;
                                         }else{
-                                            $this.util.showInfo(0,response.data);
+                                            util.showInfo(false,response.data);
                                         }
                                     }
                                 });
@@ -188,7 +193,7 @@
                 }
                 // 获取今日推荐信息
                 uni.request({
-                    url:$this.util.getApiUrl("/yppGame/get_index_games"),
+                    url:util.getApiUrl("/yppGame/get_index_games"),
                     method:"POST",
                     data:{
                         gameType:null,
@@ -396,7 +401,7 @@
                     height: 90upx;
                 }
                 .text{
-                    margin-top:10px;
+                    /*margin-top:10px;*/
                 }
             }
         }

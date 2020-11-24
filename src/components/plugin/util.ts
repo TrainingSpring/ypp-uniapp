@@ -5,6 +5,12 @@
 function getApiUrl(url: string | undefined){
     return "http://192.168.1.44:8001/front" + url;
 }
+/**
+ * 获取静态文件的url前缀
+ * */
+function getStaticUrl(name:string){
+    return "https://kumeng.oss-cn-hangzhou.aliyuncs.com/ypp_2.0/front/mini_images/static/"+name
+}
 interface Options {
     page:number,
     gameName?:string|null,
@@ -213,5 +219,6 @@ export default{
     surplusTime,
     formatDate,
     getGameTypes,
-    getRealInfo
+    getRealInfo,
+    getStaticUrl
 }

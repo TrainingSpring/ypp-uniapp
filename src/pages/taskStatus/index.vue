@@ -28,7 +28,7 @@
                     <view class="cu-load cuIcon-loading loading text-black" v-if="loading"></view>
                 </scroll-view>
                 <view v-if="list[_index].length === 0 || !list[_index]" class="none" style="display: flex; height: calc(100% - 90upx);justify-content: center;align-items: center;margin-top: 30upx;">
-                    <image src="../../static/none.png" style="width: 80%;"></image>
+                    <image :src="util.getStaticUrl('none.png')" style="width: 80%;"></image>
                 </view>
             </swiper-item>
         </swiper>

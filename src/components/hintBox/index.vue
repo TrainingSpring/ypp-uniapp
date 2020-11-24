@@ -30,7 +30,7 @@
             icon:{  // 图标
                 type:String,
                 default(){
-                    return "../../static/hint/icon.png"
+                    return "https://kumeng.oss-cn-hangzhou.aliyuncs.com/ypp_2.0/front/mini_images/static/hint/icon.png";
                 }
             },
             content:String,  // 显示文字,或者使用标签

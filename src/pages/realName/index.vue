@@ -13,7 +13,7 @@
         <view class="protocol" :style="{color:protocol?'#2894FF':'#999'}">
             <checkbox-group @change="checkBoxChange" class="">
                 <label>
-                    <checkbox value="0" color="#2894FF" /> 已阅读并同意《用户协议》及《隐私政策》
+                    <checkbox value="0" color="#2894FF" /> 已阅读并同意 <text @tap.stop="gotoProtocol(0)">《用户协议》</text>及<text @tap.stop="gotoProtocol(1)">《隐私政策》</text>
                 </label>
             </checkbox-group>
         </view>
@@ -37,6 +37,15 @@
             TForm:tform
         },
         methods:{
+            /**
+            * @desc 跳转到协议
+             * @param type 0用户协议  1:用户隐私
+            * */
+            gotoProtocol(type){
+                uni.navigateTo({
+                    url:"../userProtocol/index?type="+type,
+                })
+            },
             checkBoxChange(val){
                 let detail = val.detail.value;
                 this.protocol = detail.length === 1;

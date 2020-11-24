@@ -2,13 +2,13 @@
     <view class="search">
         <search-box style="font-size: 12px;" v-model="keyword" placeholder="搜索你感兴趣的" button="inside" :mode="2"></search-box>
         <scroll-view scroll-y v-if="list.length>0" @scrolltolower="nextPage">
-            <t-item v-for="item,index in list" :data="item"></t-item>
+            <t-item v-for="item,index in list" :data="item" @ontap="showDetail(item)"></t-item>
             <view class=" text-gray text-center padding-sm" v-if="notMore">
                 <text class="cuIcon-emoji margin-right"></text><text>没有更多了</text>
             </view>
         </scroll-view>
         <view class="none" v-else>
-            <image src="../../static/none.png" style="width: 80%;"></image>
+            <image :src="util.getStaticUrl('none.png')" style="width: 80%;"></image>
         </view>
     </view>
 </template>
@@ -30,6 +30,14 @@
             this.init(arg)
         },
         methods:{
+            /**
+             * 游戏详情
+             * */
+            showDetail(data){
+                uni.navigateTo({
+                    url:`/pages/taskInfo/index?data=${JSON.stringify(data)}`
+                });
+            },
              /**
               * 初始化
               */

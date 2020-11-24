@@ -1,7 +1,7 @@
 <!--广告页-->
 <template>
     <view class="guide">
-        <image src="../../static/guide/logo.png"></image>
+        <image :src="util.getStaticUrl('logo.png')"></image>
         <view class="text">游拼拼 | 一站式游戏创业培育平台</view>
         <view class="flex">
             <view class="bg-white flex-sub radius shadow-lg">
@@ -16,36 +16,41 @@
     export default {
         name: "index",
         mounted(){
-            let $this = this;
-            // 获取微信用户信息
+            let $this = this
+            // 获取用户的信息
+            let userInfo = uni.getStorageSync("userInfo");
+            // 获取微信用户登录信息
             // #ifdef MP-WEIXIN
-            uni.login({
-                success(res){
-                    if (res.errMsg === "login:ok") {
-                        uni.request({
-                            url:$this.util.getApiUrl("/yppUser/login_wechat"),
-                            method:"POST",
-                            data:{
-                                wechatCode:res.code
-                            },
-                            success(suc){
-                                let data = suc.data;
-                                if (data.code === 200) {
-                                    uni.setStorage({
-                                        key:"loginInfo",
-                                        data:data.result
-                                    })
-                                }else{
-                                    $this.util.showInfo(0,data);
+            if (userInfo) {
+                uni.login({
+                    success(res){
+                        if (res.errMsg === "login:ok") {
+                            uni.request({
+                                url:$this.util.getApiUrl("/yppUser/login_wechat"),
+                                method:"POST",
+                                data:{
+                                    wechatCode:res.code
+                                },
+                                success(suc){
+                                    let data = suc.data;
+                                    if (data.code === 200) {
+                                        uni.setStorage({
+                                            key:"loginInfo",
+                                            data:data.result
+                                        })
+                                    }else{
+                                        $this.util.showInfo(0,data);
+                                    }
                                 }
-                            }
-                        })
-                    }
-                },
-                fail(err){
+                            })
+                        }
+                    },
+                    fail(err){
 
-                }
-            });
+                    }
+                });
+            }
+
             // #endif
             setTimeout(function(){
                 uni.switchTab({

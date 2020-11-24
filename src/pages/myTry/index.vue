@@ -17,7 +17,7 @@
         <view class="hintBox" :style="{display:modal.show?'block':'none'}">
             <view class="hint">
                 <view class="icon">
-                    <image src="../../static/try/icon.png"></image>
+                    <image :src="util.getStaticUrl('try/icon.png')"></image>
                 </view>
                 <view class="text">任务提交成功</view>
                 <view class="btn" @tap.prevent="hideModal">我知道了</view>

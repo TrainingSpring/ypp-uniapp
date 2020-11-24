@@ -1,7 +1,7 @@
 <template>
     <view class="mine">
         <view class="top user-info" v-if="!!userInfo">
-                <image src="../../static/home/banner.png" class="background">
+                <image :src="util.getStaticUrl('home/banner.png')" class="background">
 
                 </image>
                 <view class="wx-info">
@@ -10,7 +10,7 @@
                             <image :src="userInfo.avatar" style="width: 100%;height: 100%;"></image>
                         </view>
                         <view class="decoration">
-                            <image src="../../static/mine/medal.png"></image>
+                            <image :src="util.getStaticUrl('mine/medal.png')"></image>
                         </view>
                     </view>
                     <view class="right">
@@ -33,7 +33,7 @@
                         <view class="text">总试玩(个)</view>
                         <view class="question">
                             <view class="iconfont icon-yiwen" @tap="onHint">
-                                <bgi class="hint" src="../../static/mine/hint.png" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
+                                <bgi class="hint" :src="util.getStaticUrl('mine/hint.png')" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
                             </view>
 
                         </view>
@@ -42,25 +42,25 @@
             <view class="menu">
                 <view class="menu-item">
                     <navigator url="/pages/myTry/index">
-                        <view class="icon"><image src="../../static/mine/icon_1.png"></image></view>
+                        <view class="icon"><image :src="util.getStaticUrl('mine/icon_1.png')"></image></view>
                         <view class="text">我的试玩</view>
                     </navigator>
                 </view>
                 <view class="menu-item">
                     <navigator url="/pages/taskStatus/index?status=0">
-                        <view class="icon"><image src="../../static/mine/icon_2.png"></image></view>
+                        <view class="icon"><image :src="util.getStaticUrl('mine/icon_2.png')"></image></view>
                         <view class="text">待提交</view>
                     </navigator>
                 </view>
                 <view class="menu-item">
                     <navigator url="/pages/taskStatus/index?status=1">
-                        <view class="icon"><image src="../../static/mine/icon_3.png"></image></view>
+                        <view class="icon"><image :src="util.getStaticUrl('mine/icon_3.png')"></image></view>
                         <view class="text">审核中</view>
                     </navigator>
                 </view>
                 <view class="menu-item">
                     <navigator url="/pages/taskStatus/index?status=2">
-                        <view class="icon"><image src="../../static/mine/icon_4.png"></image></view>
+                        <view class="icon"><image :src="util.getStaticUrl('mine/icon_4.png')"></image></view>
                         <view class="text">已完成</view>
                     </navigator>
                 </view>
@@ -68,16 +68,16 @@
         </view>
 <!--        未登录状态      -->
         <view class="top user-info" v-if="!userInfo" @tap="goLogin">
-                <image src="../../static/home/banner.png" class="background">
+                <image :src="util.getStaticUrl('home/banner.png')" class="background">
 
                 </image>
                 <view class="wx-info">
                     <view class="left">
                         <view class="circle-white">
-                            <image src="../../static/home/head.png" style="width: 100%;height: 100%;"></image>
+                            <image :src="util.getStaticUrl('home/head.png')" style="width: 100%;height: 100%;"></image>
                         </view>
                         <view class="decoration">
-                            <image src="../../static/mine/medal.png"></image>
+                            <image :src="util.getStaticUrl('mine/medal.png')"></image>
                         </view>
                     </view>
                     <view class="right">
@@ -99,8 +99,8 @@
                         <view class="money">0</view>
                         <view class="text">总试玩(个)</view>
                         <view class="question">
-                            <view class="iconfont icon-yiwen" @tap="onHint">
-                                <bgi class="hint" src="../../static/mine/hint.png" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
+                            <view class="iconfont icon-yiwen">
+                                <bgi class="hint" :src="util.getStaticUrl('mine/hint.png')" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
                             </view>
 
                         </view>
@@ -109,25 +109,25 @@
             <view class="menu"  style="filter: grayscale(100%)">
                 <view class="menu-item">
                     <view>
-                        <view class="icon"><image src="../../static/mine/icon_1.png"></image></view>
+                        <view class="icon"><image :src="util.getStaticUrl('mine/icon_1.png')"></image></view>
                         <view class="text">我的试玩</view>
                     </view>
                 </view>
                 <view class="menu-item">
                     <view>
-                        <view class="icon"><image src="../../static/mine/icon_2.png"></image></view>
+                        <view class="icon"><image :src="util.getStaticUrl('mine/icon_2.png')"></image></view>
                         <view class="text">待提交</view>
                     </view>
                 </view>
                 <view class="menu-item">
                     <view>
-                        <view class="icon"><image src="../../static/mine/icon_3.png"></image></view>
+                        <view class="icon"><image :src="util.getStaticUrl('mine/icon_3.png')"></image></view>
                         <view class="text">审核中</view>
                     </view>
                 </view>
                 <view class="menu-item">
                     <view>
-                        <view class="icon"><image src="../../static/mine/icon_4.png"></image></view>
+                        <view class="icon"><image :src="util.getStaticUrl('mine/icon_4.png')"></image></view>
                         <view class="text">已完成</view>
                     </view>
                 </view>
@@ -155,8 +155,8 @@
                     <text class="text-grey">实名认证</text>
                 </view>
                 <view class="action">
-                    <text class="text-gray">已实名</text>
-<!--                    <text class="cuIcon-right text-gray"></text>-->
+                    <text class="text-gray" v-if="isRealName">已实名</text>
+                    <text class="cuIcon-right text-gray" v-if="!isRealName"></text>
                 </view>
             </view>
             <view class="cu-item" >
@@ -220,7 +220,7 @@
                 </view>
             </view>
             <view class="space"></view>
-            <view class="cu-item" @tap="clearCache">
+            <view class="cu-item">
                 <view class="content">
                     <text class="cuIcon-magic text-blue"></text>
                     <text class="text-grey">清除缓存</text>
@@ -240,7 +240,7 @@
             </view>
         </view>
         <view class="padding flex flex-direction" v-if="!!userInfo">
-            <button class="cu-btn bg-blue margin-tb-sm lg" style="margin:0;">退出登录</button>
+            <button class="cu-btn bg-blue margin-tb-sm lg" style="margin:0;" @tap="logout">退出登录</button>
         </view>
     </view>
 </template>
@@ -267,13 +267,40 @@
                 ,
                 msg:false,
                 hint:false,
-                isRealName:false
+                isRealName:false,
             }
         },
         onShow(){
+            console.log("展示")
             this.init();
         },
         methods:{
+            /**
+             * 退出登录
+             * */
+            logout(){
+                let $this = this;
+                uni.showModal({
+                    title:"提示",
+                    content:"确认退出？",
+                    showCancel:true,
+                    cancelColor:"#ccc",
+                    confirmColor:"#2894FF",
+                    success:function (res) {
+                        let confirm = res.confirm || false;
+                        let cancel = res.cancel || false;
+                        if (confirm) {
+                            uni.showLoading({title:"请稍后..."});
+                            setTimeout(function () {
+                                uni.clearStorageSync();
+                                uni.hideLoading();
+                                $this.init.apply($this);
+                                uni.showToast({title:"success",icon:"none"});
+                            },1000)
+                        }
+                    }
+                });
+            },
             /**
              * 页面数据初始化
              * */
@@ -325,7 +352,10 @@
                                 })
                             }
                         }
-                    })
+                    });
+                else
+                    $this.userInfo=null;
+                console.log($this.userInfo,$this);
 
 
             },
@@ -333,9 +363,10 @@
              * 清除缓存
              * */
             clearCache(){
+                let $this = this;
                 uni.showModal({
                     title:"提示",
-                    content:"确定清除本地所有缓存?",
+                    content:"确定清除本地所有缓存(同时清除登录信息)?",
                     showCancel:true,
                     cancelColor:"#ccc",
                     confirmColor:"#2894FF",
@@ -345,9 +376,10 @@
                         if (confirm) {
                             uni.showLoading({title:"请稍后..."});
                             setTimeout(function () {
-                                uni.clearStorage();
+                                uni.clearStorageSync();
                                 uni.hideLoading();
-                                uni.showToast({title:"清理完成",icon:"none"})
+                                $this.init.apply($this);
+                                uni.showToast({title:"清理完成",icon:"none"});
                             },1000)
                         }
                     }

@@ -6,7 +6,7 @@
         </view>
         <wuc-tab :tabList="tab.tabList" :tabCur="tab.cur" textFlex class="tab" @change="tabChange"></wuc-tab>
 <!--        <t-radio :data="sort" @change=" radioChange"></t-radio>-->
-        <swiper class="swiper" :current="swiper">
+        <swiper class="swiper" :current="swiper" @change="swiperChange">
             <swiper-item v-for="item,index in tab.tabList">
                 <!--<scroll-view style="height: calc(100vh - 292upx);" scroll-y @scrolltolower="nextPage">
                     <t-item v-if="tab.data[index].length>0" v-for="itm,idx in tab.data[index]" :data="itm" @ontap="showDetail(itm)"></t-item>
@@ -53,6 +53,14 @@
             this.init();
         },
         methods:{
+            /**
+             * 当swiepr改变后触发
+             * */
+            swiperChange(event){
+                let cur = event.detail.current;
+                this.$set(this.tab,"cur",cur);
+                this.$set(this,"swiper",cur);
+            },
             /***
              * 初始化
              * */

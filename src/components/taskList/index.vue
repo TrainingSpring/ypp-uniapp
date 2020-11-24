@@ -137,6 +137,12 @@
                 let state = typeof data.submitStatus === "string"?parseInt(data.submitStatus):data.submitStatus;
                 let hint = this.hint;
                 let $this = this;
+                let loginInfo = uni.getStorageSync("loginInfo");
+                // 未登录
+                if (!loginInfo) return uni.navigateTo({
+                    url:"../../pages/login/index"
+                });
+                // 已登录
                 if (state === 1 || state === 2)return;
                 let setInfo = (options={})=>{
                     this.hint = Object.assign(hint,options)
@@ -158,7 +164,7 @@
                             uni.request({
                                 url:$this.util.getApiUrl("/yppTask/submit_task"),
                                 data:{
-                                    uid:$this.storage.loginInfo.uid,
+                                    uid:loginInfo.uid,
                                     taskId:data.taskId
                                 },
                                 method:"POST",
@@ -179,7 +185,7 @@
                     if ($this.type === 0){
                         $this.hint.show = true;
                         setInfo({
-                            icon:"../../static/hint/success.png",
+                            icon:$this.util.getStaticUrl("hint/success.png"),
                             type:1,
                             confirm:"确认提交",
                             cancel:"暂不提交",
@@ -204,7 +210,7 @@
                         url:$this.util.getApiUrl("/yppTask/receive_task"),
                         method:"POST",
                         data:{
-                            uid:$this.storage.loginInfo.uid,
+                            uid:loginInfo.uid,
                             taskId:data.taskId
                         },
                         success(result){
@@ -213,7 +219,7 @@
                             uni.hideLoading();
                             if (r_data.code === 200) {
                                 setInfo({
-                                    icon:"../../static/hint/icon.png",
+                                    icon:$this.util.getStaticUrl("hint/icon.png"),
                                     type:0,
                                     confirm:"我知道了",
                                     hintTitle:"恭喜领取成功",
@@ -222,7 +228,7 @@
                                 $this.data[index].submitStatus = 0;
                             }else{
                                 setInfo({
-                                    icon:"../../static/hint/fail.png",
+                                    icon:$this.util.getStaticUrl("hint/fail.png"),
                                     type:0,
                                     confirm:"我知道了",
                                     hintTitle:"很遗憾领取失败", // 很遗憾领取失败

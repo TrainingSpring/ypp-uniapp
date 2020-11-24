@@ -2,7 +2,7 @@
 <template>
     <view class="login">
         <view class="logo">
-            <image src="../../static/guide/logo.png" mode="widthFix"></image>
+            <image :src='util.getStaticUrl("guide/logo.png")' mode="widthFix"></image>
             <view class="text" >游拼拼手游平台</view>
         </view>
         <view class="author">

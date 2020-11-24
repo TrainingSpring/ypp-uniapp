@@ -2,9 +2,9 @@
 <template>
     <view id="Login">
         <view class="top">
-            <image v-if="type===0" src="../../static/login/img.png" mode="widthFix"></image>
+            <image v-if="type!==1" :src="util.getStaticUrl('login/img.png')" mode="widthFix"></image>
             <view class="topHint" v-show="type===1">
-                <view class="title">请输入手机号码</view>
+                <view class="title">请输入原手机号码</view>
                 <view class="text">手机号仅用于登录和保护账号</view>
             </view>
         </view>
@@ -12,10 +12,10 @@
             <t-form title="手机号码" max="11" min="11" type="text" placeholder="请输入您的手机号码" v-model="phone" ></t-form>
             <t-form title="验证码" type="check" max="4" placeholder="请输入验证码" :down="down" v-model="check" @oncheck="getCode"></t-form>
         </view>
-        <view class="wx text-center padding" v-if="bindWxPhone && type===0">
+        <view class="wx text-center padding" v-if="bindWxPhone && type!==1">
             <button class="cu-btn bg-green text-white lg" open-type="getPhoneNumber" @getphonenumber="getPhone"><text class="cuIcon-weixin margin-right"></text>绑定微信手机号</button>
         </view>
-        <view class="modifyBindPhone text-right text-blue padding-sm text-sm margin-right" v-if="type===0" @tap="changeBindType">
+        <view class="modifyBindPhone text-right text-blue padding-sm text-sm margin-right" v-if="type!==1" @tap="changeBindType">
             {{bindWxPhone?"绑定其他手机号":"使用微信手机号"}}
         </view>
         <view class="hint" v-if="type===0">
@@ -23,7 +23,9 @@
             机号进行短信验证
 
         </view>
-        <button class="finish" v-if="!bindWxPhone || type===1" @tap="savePhoneNumber">{{type===0?'保存':'完成'}}</button>
+        <button class="finish" v-if="!bindWxPhone && type!==1" @tap="savePhoneNumber">完成</button>
+        <button class="finish" v-if="type===1" @tap="savePhoneNumber">下一步</button>
+        <view class="mask" style="position: fixed;top:0;left: 0;width:100%;height: 100%;z-index: 99999;" v-show="mask"></view>
     </view>
 </template>
 
@@ -36,9 +38,10 @@
             return {
                 phone:null,  // 手机号码
                 check:null,  // 验证码
-                type:1,      // 页面渲染验证  :0 未绑定  1 绑定后修改
+                type:1,      // 页面渲染验证  :0 未绑定  1 修改(验证原号码)  2.修改(绑定新号码)
                 bindWxPhone:true,
                 down:0, // 倒计时
+                mask:false
             }
         },
         mounted(){
@@ -57,12 +60,14 @@
              * */
             getCode(){
                 let $this = this;
+                let type = this.type===0?1:3;
+                console.log("获取验证码",type);
                 if (this.tools.checkInput("phone", this.phone) && !this.down)
                     uni.request({
                         url:$this.util.getApiUrl("/sms/get_verification_code"),
                         method:"GET",
                         data:{
-                            type:1,
+                            type,
                             phone:$this.phone
     ,
                         },
@@ -72,6 +77,8 @@
                                     $this.down = data[2];
                                 });
                                 $this.util.showInfo(1,res.data);
+                            }else{
+                                $this.util.showInfo(0,res.data);
                             }
                         },
                         fail(err){
@@ -104,28 +111,78 @@
                 let $this = this;
                 let detail = res.detail;
                 let login = uni.getStorageSync("loginInfo");
-                uni.request({
-                    url:$this.util.getApiUrl("/yppUser/bind_phone_wechat"),
-                    data:{
-                        uid:login.uid,
-                        encryptedData:detail.encryptedData,
-                        iv:detail.iv
-                    },
-                    success(result){
-                        let data = result.data;
-                        if (data.code === 200) {
-                            uni.setStorage({
-                                key:"phoneNumber",
-                                data:data.result,
-                                success(){
-                                    uni.navigateBack({})
-                                }
-                            })
-                        }else{
-                            $this.util.showInfo(0,data);
+                let getUserWxPhone = function(){
+                    uni.request({
+                        url:$this.util.getApiUrl("/yppUser/bind_phone_wechat"),
+                        method:"POST",
+                        data:{
+                            uid:login.uid,
+                            encryptedData:detail.encryptedData,
+                            iv:detail.iv
+                        },
+                        success(result){
+                            let data = result.data;
+                            if (data.code === 200) {
+                                uni.setStorage({
+                                    key:"phoneNumber",
+                                    data:data.result,
+                                    success(){
+                                        $this.mask = true;
+                                        $this.util.showInfo(1,data);
+                                        setTimeout(()=>{
+                                            uni.navigateBack({});
+                                        },2000)
+
+                                    }
+                                })
+                            }else{
+                                $this.util.showInfo(0,data);
+                            }
                         }
+                    });
+                };
+                console.log(detail);
+                uni.checkSession({
+                    success(res){
+                        getUserWxPhone();
+                    },
+                    fail(err){  // 登录失效 重新登录
+                        uni.login({
+                            success(res){
+                                if (res.errMsg === "login:ok") {
+                                    uni.request({
+                                        url:$this.util.getApiUrl("/yppUser/login_wechat"),
+                                        method:"POST",
+                                        data:{
+                                            wechatCode:res.code
+                                        },
+                                        success(suc){
+                                            let data = suc.data;
+                                            if (data.code === 200) {
+                                                uni.setStorage({
+                                                    key:"loginInfo",
+                                                    data:data.result,
+                                                    success(){
+                                                        getUserWxPhone();
+                                                    }
+                                                })
+                                            }else{
+                                                $this.util.showInfo(0,data);
+                                            }
+                                        }
+                                    })
+                                }
+                            },
+                            fail(){
+                                uni.showToast({
+                                    title:"登录失效...",
+                                    icon:"none"
+                                })
+                            }
+                        })
                     }
-                });
+                })
+
             },
             /**
              * 保存绑定
@@ -135,33 +192,104 @@
                 let code = this.check;
                 let $this = this;
                 let login = uni.getStorageSync("loginInfo");
+                let type = this.type;
+                if (!this.tools.checkInput("phone", phone)) {
+                    return uni.showToast({
+                        title:"您的手机号输入不正确,请检查后重新输入",
+                        icon:"none",
+                        duration:3000
+                    })
+                }else if(!code || code === ""  || code.length<4){
+                    return uni.showToast({
+                        title:"请输入正确的验证码!",
+                        icon:"none",
+                        duration:3000
+                    })
+                }
+                // 校验验证码
+
                 uni.showLoading({
                     title:"请稍后..."
                 });
-                // 绑定手机号
                 uni.request({
-                    url:$this.util.getApiUrl("/yppUser/bind_phone"),
-                    method:"POST",
+                    url:$this.util.getApiUrl("/sms/verification_code"),
+                    method:"GET",
                     data:{
-                        uid:login.uid,
-                        phone:phone,
-                        verificationCode:code
+                        phone,
+                        code
                     },
-                    success(result){
-                        let data = result.data;
-                        if (data.code === 200){
-                            uni.setStorage({
-                                key:"phoneNumber",
-                                data:data.result,
-                                success(){
-                                    uni.hideLoading();
-                                    uni.navigateBack({})
-                                }
-                            });
-                        }
+                    success(res){
+                        let data =  res.data;
+                        if (data.code === 200 && data.result){
+                            if (type === 0) {  // 绑定手机号
+                                // 绑定手机号
+                                uni.request({
+                                    url:$this.util.getApiUrl("/yppUser/bind_phone"),
+                                    method:"POST",
+                                    data:{
+                                        uid:login.uid,
+                                        phone:phone,
+                                        verificationCode:code
+                                    },
+                                    success(result){
+                                        let data = result.data;
+                                        if (data.code === 200){
+                                            uni.setStorage({
+                                                key:"phoneNumber",
+                                                data:data.result,
+                                                success(){
+                                                    uni.hideLoading();
+                                                    uni.navigateBack({});
+                                                    $this.util.showInfo(1,data);
+                                                }
+                                            });
+                                        }else{
+                                            $this.util.showInfo(0,data);
+                                        }
 
+                                    }
+                                })
+                            }else if (type === 1) {
+                                // 验证成功  进入下一步绑定新手机号
+                                $this.type = 2;
+                                $this.phone = null;
+                                $this.check = null;
+                                uni.hideLoading();
+                            }else{
+                                // 绑定新手机号
+                                uni.request({
+                                    url:$this.util.getApiUrl("/yppUser/update_phone"),
+                                    method:"POST",
+                                    data:{
+                                        uid:login.uid,
+                                        phone:phone,
+                                        verificationCode:code
+                                    },
+                                    success(result){
+                                        let data = result.data;
+                                        if (data.code === 200){
+                                            uni.setStorage({
+                                                key:"phoneNumber",
+                                                data:data.result,
+                                                success(){
+                                                    uni.hideLoading();
+                                                    uni.navigateBack({});
+                                                    $this.util.showInfo(1,data);
+                                                }
+                                            });
+                                        }else{
+                                            $this.util.showInfo(0,data);
+                                        }
+
+                                    }
+                                })
+                            }
+                        } else{
+                            $this.util.showInfo(0,data);
+                        }
                     }
                 })
+
             }
         }
     }

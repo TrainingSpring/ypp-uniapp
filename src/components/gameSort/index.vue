@@ -5,7 +5,7 @@
         <scroll-view style="height: calc(100vh - 292upx);" scroll-y @scrolltolower="nextPage">
             <t-item v-if="data.length>0" v-for="item,index in data" :btn-text="type==2?item.btnText+'后开启':!!item.btnText?item.btnText:'马上赚'" :btn-type="type===2?1:0" :show-progress="type === 2?false:true" :data="item" @ontap="type!=2?showDetail(item):undefined"></t-item>
             <view v-if="data.length == 0 || !data" class="none" style="display: flex; height: calc(100% - 90upx);justify-content: center;align-items: center;margin-top: 30upx;">
-                <image src="../../static/none.png" style="width: 80%;"></image>
+                <image :src="util.getStaticUrl('none.png')" style="width: 80%;"></image>
             </view>
             <view class=" text-gray text-center padding-sm" v-if="notMore && data.length>0">
                 <text class="cuIcon-emoji margin-right"></text><text>没有更多了</text>

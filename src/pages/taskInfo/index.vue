@@ -30,16 +30,16 @@
             </view>
         </card>
         <card class="userInfo" style="padding: 20upx 35upx;" title="请输入账号信息">
-            <view class="right" v-if="!userInfo">
-                <bgi src="../../static/task/zq.png" class="btn" @tap="goBindInfo">
+            <view class="right" v-if="!roleInfo">
+                <bgi :src="util.getStaticUrl('task/zq.png')" class="btn" @tap="goBindInfo">
                     <text>马上去</text>
                 </bgi>
             </view>
-            <view class="info" v-if="!!userInfo">
-                <view class="li">账号: {{userInfo.account}}</view>
-                <view class="li">角色: {{userInfo.role}}</view>
-                <view class="li">等级: {{userInfo.level}}</view>
-                <view class="li">充值金额: {{userInfo.money}}元</view>
+            <view class="info" v-if="!!roleInfo">
+                <view class="li">账号: {{roleInfo.account}}</view>
+                <view class="li">角色: {{roleInfo.role}}</view>
+                <view class="li">等级: {{roleInfo.level}}</view>
+                <view class="li">充值金额: {{roleInfo.money}}元</view>
                 <view class="finish">
                     <view class="getMoney">+{{tools.formatMoney(game.finishedMoney)}}元</view>
                     <view class="getText">奖励已领取</view>
@@ -90,7 +90,7 @@
         <view class="page-bottom">
             <view class="server">
                 <view class="icon">
-                    <image src="../../static/task/server.png"></image>
+                    <image :src="util.getStaticUrl('task/server.png')"></image>
                 </view>
                 <view class="text">联系客服</view>
             </view>
@@ -148,7 +148,7 @@
         <view class="cu-modal bind-account-info" @tap="modalHide(3)" :class="bindModal.show?'show':''">
             <view class="cu-dialog" @tap.stop="clearPre">
                 <view class="top">
-                    <bgi class="title" src="../../static/taskInfo/title_bg.png"><text>请填写游戏信息</text></bgi>
+                    <bgi class="title" :src="util.getStaticUrl('taskInfo/title_bg.png')"><text>请填写游戏信息</text></bgi>
                 </view>
                 <view class="cu-form-group">
                     <view id="bind_info">
@@ -159,7 +159,7 @@
                                     <input type="text" id="account" v-model="bindModal.account" placeholder="请输入游戏账号">
                                 </view>
 
-                                <bgi class="get-info btn" src="../../static/task/border.png" @tap="searchRoleInfo"><text>点击查询</text></bgi>
+                                <bgi class="get-info btn" :src="util.getStaticUrl('task/border.png')" @tap="searchRoleInfo"><text>点击查询</text></bgi>
                             </view>
                             <view class="row">
                                 <i class="iconfont icon-role"></i>
@@ -205,22 +205,22 @@
                 array: [{name:'中国'},{name: '美国'}, {name:'巴西'}, {name:'日本'}],
                 index:0,
                 game:{ // 游戏信息
-                    icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
-                    name:"游戏名",        // 游戏名
-                    desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
-                    progress:80,    // 进度
-                    money:tools.formatMoney(12.5),     // 赚取金额
-                    server:"二区",  // 区服
-                    recommend:true, // 推荐
-                    newGame:true,   // 新游戏
-                    newTask:true,   // 新任务
-                    source:"you迷乐",      // 平台
-                    type:"传奇",          // 游戏类型
-                    id:123,             // 游戏id
-                    time:10,            // 剩余时间
-                    finishedMoney:100  //  已完成的任务的总金额
+                    // icon:"http://entity.90yx.cn/main/img/20201105/5fa3a4b033264.png",        // 游戏图标
+                    // name:"游戏名",        // 游戏名
+                    // desc:"游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介游戏简介",        // 描述
+                    // progress:80,    // 进度
+                    // money:tools.formatMoney(12.5),     // 赚取金额
+                    // server:"二区",  // 区服
+                    // recommend:true, // 推荐
+                    // newGame:true,   // 新游戏
+                    // newTask:true,   // 新任务
+                    // source:"you迷乐",      // 平台
+                    // type:"传奇",          // 游戏类型
+                    // id:123,             // 游戏id
+                    // time:10,            // 剩余时间
+                    // finishedMoney:100  //  已完成的任务的总金额
                 },
-                userInfo:  // 该游戏用户绑定信息
+                roleInfo:  // 该游戏用户绑定信息
                 undefined
                 //     {
                 //         account:"123456789",   // 账号
@@ -230,33 +230,6 @@
                 // }
                 ,
                 task:[  // 任务列表
-                    {
-                        title:"等级 50级",  // 任务标题
-                        state:1,            // 状态  0 未领取(待完成)  1 已领取,未提交(待完成) 2 已提交(已完成)
-                        nums:10,            // 已参加试玩的名额
-                        sum:200,            // 试玩总人数
-                        money:1.5,           // 任务奖励
-                        endTime:"2020年11月20日",  // 结束日期
-                        condition:"此次试玩限定新用户，老用 户试玩后，将无法领取奖励。",      // 试玩参与条件
-                    },
-                    {
-                        title:"等级 50级",  // 任务标题
-                        state:0,            // 状态  0 未领取(待完成)  1 已领取,未提交(待完成) 2 已提交(已完成)
-                        nums:10,            // 已参加试玩的名额
-                        sum:200,            // 试玩总人数
-                        money:1.5,           // 任务奖励
-                        endTime:"2020年11月20日",  // 结束日期
-                        condition:"此次试玩限定新用户，老用 户试玩后，将无法领取奖励。",      // 试玩参与条件
-                    },
-                    {
-                        title:"等级 50级",  // 任务标题
-                        state:2,            // 状态  0 未领取(待完成)  1 已领取,未提交(待完成) 2 已提交(已完成)
-                        nums:10,            // 已参加试玩的名额
-                        sum:200,            // 试玩总人数
-                        money:1.5,           // 任务奖励
-                        endTime:"2020年11月20日",  // 结束日期
-                        condition:"此次试玩限定新用户，老用 户试玩后，将无法领取奖励。",      // 试玩参与条件
-                    },
                 ],
                 hint:{  // 提示信息
                     show:false,
@@ -295,7 +268,6 @@
             let gameId = parseInt(data.gameId);
             let serverId =parseInt(data.serverId);
             let $this = this;
-            let userInfo = this.login = uni.getStorageSync("userInfo");  // 获取用户登录信息
             // this.login = userInfo;
             let loginInfo = uni.getStorageSync("loginInfo"); // 获取用户登录的uid等信息
             // 获取游戏的相关信息
@@ -309,11 +281,13 @@
                 success:function (result) {
                     let res_data = result.data;
                     if (res_data.code === 200) {
-
+                        console.log(res_data,"游戏详情");
                         let res = res_data.result;
                         let surTime = $this.util.surplusTime(res.startTime,res.endTime);
                         // console.log(down_str);
                         $this.game = { // 游戏信息
+                            android:res.androidDownUrl,  // 安卓下载地址
+                            ios:res.iosDownUrl,    // IOS 下载地址
                             icon: data.gameLogo,        // 游戏图标
                             name: res.gameName,        // 游戏名
                             desc: res.gameDesc,        // 描述
@@ -331,40 +305,75 @@
                             startTime: $this.util.formatDate(res.startTime, 0, "MM月dd日 hh时"),  // 开始时间
                             endTime: $this.util.formatDate(res.endTime, 0, "MM月dd日 hh时"),  // 结束时间
                         };
+                        $this.init($this.game);
                     }else{
                         $this.util.showInfo(0,data)
                     }
                 }
-            })
-            // 获取游戏任务相关信息
-            uni.request({
-                url:$this.util.getApiUrl("/yppTask/get_task_list_and_isreceive"),
-                data:{
-                    uid:loginInfo.uid,
-                    gameId:data.gameId,
-                    serverId:data.serverId,
-                    taskType:1
-                },
-                method:"POST",
-                success(res){
-                    let r_data = res.data;
-                    if (r_data.code === 200) {
-                        $this.task = r_data.result.records;
-                        console.log( $this.task,"666666666666666666666");
-                    }else{
-                        $this.util.showInfo(0,r_data);
-                    }
-                }
-            })
+            });
+        },
+        onShow(){
+            if (this.game.gameId)
+                this.init(this.game);
         },
         methods:{
-
+            /**
+             * @desc 初始化页面数据:
+             *          1 . 登录信息
+             *          2 . 角色绑定信息
+             *          3. 任务信息
+             * */
+            init(gameInfo){
+                let $this = this;
+                let userInfo = this.login = uni.getStorageSync("userInfo");  // 获取用户登录信息
+                let uid = !userInfo?null:uni.getStorageSync("loginInfo").uid;
+                // 获取游戏任务相关信息
+                uni.request({
+                    url:$this.util.getApiUrl("/yppTask/get_task_list_and_isreceive"),
+                    data:{
+                        uid:uid,
+                        gameId:$this.game.gameId,
+                        serverId:$this.game.serverId,
+                        taskType:1
+                    },
+                    method:"POST",
+                    success(res){
+                        let r_data = res.data;
+                        if (r_data.code === 200) {
+                            $this.task = r_data.result.records;
+                        }else{
+                            $this.util.showInfo(0,r_data);
+                        }
+                    }
+                });
+                if (!userInfo) return;
+                // 获取角色绑定相关信息
+                uni.request({
+                    url:$this.util.getApiUrl("/yppUser/get_bind_user_game_acccount"),
+                    method:"POST",
+                    data:{
+                        uid,
+                        gameId:gameInfo.gameId,
+                        serverId:gameInfo.serverId
+                    },
+                    success(res){
+                        let data = res.data;
+                        if (data.code === 200) {
+                            $this.roleInfo = {
+                                account:data.result.account,
+                                role:data.result.roleName
+                            };
+                        }
+                    }
+                })
+            },
+            /**
+             * @desc 绑定滑动选择框信息
+             * */
             bindPickerChange: function(e) {
                 let index = e.detail.value;
                 this.bindModal.index = index;
-                this.bindModal.level = this.bindModal.data[index]["cp_role_level"]
-
-
+                this.bindModal.level = this.bindModal.data[index]["cp_role_level"];
             },
             /**
              * 提交任务
@@ -390,7 +399,7 @@
                     uni.hideLoading();
                     $this.hint.show = true;
                         setInfo({
-                            icon:"../../static/hint/success.png",
+                            icon:$this.util.getStaticUrl("hint/success.png"),
                             type:1,
                             confirm:"确认提交",
                             cancel:"暂不提交",
@@ -435,7 +444,7 @@
                             uni.hideLoading();
                             if (r_data.code === 200) {
                                 setInfo({
-                                    icon:"../../static/hint/icon.png",
+                                    icon:$this.util.getStaticUrl("hint/icon.png"),
                                     type:0,
                                     confirm:"我知道了",
                                     hintTitle:"恭喜领取成功",
@@ -444,7 +453,7 @@
                                 $this.task[index].submitStatus = 0;
                             }else{
                                 setInfo({
-                                    icon:"../../static/hint/fail.png",
+                                    icon:$this.util.getStaticUrl("hint/fail.png"),
                                     type:0,
                                     confirm:"我知道了",
                                     hintTitle:"很遗憾领取失败", // 很遗憾领取失败
@@ -502,12 +511,30 @@
              * 开始试玩
              */
             startTry(){
+                let $this = this;
                 if(!this.login){
                     uni.navigateTo({
                         url:"../login/index"
                     })
                 }else{
-                    
+                    uni.getSystemInfo({
+                        success(res){
+                            uni.setClipboardData({
+                                data:$this.game[res.platform],
+                                success(){
+                                    uni.showToast({
+                                        title:"已将下载地址复制到剪切板,请前往浏览器粘贴下载!",
+                                        icon:"none",
+                                        duration:5000
+                                    })
+                                }
+                            });
+                        },
+                        fail(err){
+
+                        }
+                    })
+
                 }
             },
             /**
@@ -518,6 +545,11 @@
                 // userId:"56453791",
                 // gameName:"轩辕剑群侠录商城版",
                 // serverName:"宝石1区"
+                if (!$this.bindModal.account)
+                    return uni.showToast({
+                        title:"请输入账号",
+                        icon:"none"
+                    });
                 uni.request({
                     url:$this.util.getApiUrl("/request/post"),
                     data:{
@@ -534,8 +566,16 @@
                     success:function (result) {
                         console.log(result.data.result);
                         if (result.data.code === 200) {
-                            $this.bindModal.data = result.data.result.info;
-                            $this.bindModal.level = result.data.result.info[0]["cp_role_level"]
+                            if (result.data.result.status === 0) {
+                                $this.bindModal.data = result.data.result.info;
+                                $this.bindModal.level = result.data.result.info[0]["cp_role_level"]
+                            }else
+                                uni.showToast({
+                                    title:result.data.result.info,
+                                    icon:"none"
+                                })
+
+
                         }else{
                             $this.util.showInfo(0,result.data);
                         }
@@ -551,10 +591,10 @@
                 uni.request({
                     url:$this.util.getApiUrl("/yppUser/bind_user_game_account"),
                     data:{
-                        account:$this.userInfo.account,
+                        account:$this.roleInfo.account,
                         gameId:$this.info.id,
                         gameName:$this.info.name,
-                        roleName:$this.userInfo.role,
+                        roleName:$this.roleInfo.role,
                         serverName:$this.info.server,
                         serverId:$this.info.serverId
                     }

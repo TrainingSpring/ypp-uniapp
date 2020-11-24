@@ -2,15 +2,15 @@
 <template>
     <view class="bind cu-list menu">
         <view class="cu-item">
-            <navigator class="content" hover-class="none" url="../phone/index?type=1">
+            <navigator class="content" hover-class="none" :url="'../phone/index?type='+(!phone?0:1)">
                <view class="content">
                    <text class="cuIcon-mobile text-blue"></text>
-                   <text class="text-grey">更换手机</text>
+                   <text class="text-grey">手机号</text>
                </view>
             </navigator>
 
-            <navigator class="action" url="../phone/index?type=1">
-                <text class="text-gray phone">{{phone}}</text>
+            <navigator class="action" :url="'../phone/index?type='+(!phone?0:1)">
+                <text class="text-gray phone">{{phone||"去绑定"}}</text>
                 <text class="cuIcon-right text-gray"></text>
             </navigator>
         </view>
