@@ -11,7 +11,7 @@
         props:{
             title:String,
             padding:{
-                type:String,
+                type:[String,Boolean],
                 default(){
                     return false
                 }

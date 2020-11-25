@@ -106,8 +106,10 @@
                         data = []
                     // else
                     //     data = data.concat(res.result.records);
+
                     for (let i = 0; i < res.result.records.length; i++) {
                         let item = res.result.records[i];
+
                         item["btnText"] = $this.util.surplusTime(item.endTime);
                         data.push(item);
                     }

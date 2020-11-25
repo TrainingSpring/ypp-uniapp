@@ -184,3 +184,35 @@ ps: 小程序的background不能使用本地图片
 ## loginInfo  // 登录信息  包含uid , session_key信息
 
 ## phoneNumber  // 用户的手机号码信息
+
+# Error : 错误
+
+1. You are binding v-model directly to a v-for iteration alias. This will not be able to modify the v-for source array because writing to the alias is like modifying a function local variable. Consider using an array of objects and use v-model on an object property instead.
+
+   - 不能直接使用v-model 绑定v-for遍历出的数据
+
+   - 解决: 以push的方式  将数据绑定到字典(Json中),如下
+
+   - ```javascript
+     <div>
+     	<input v-for="item in task" v-model="item.value" />
+     <div>
+     export default{
+         data(){
+             return task;
+         },
+         mounted(){
+             let $this = this;
+             for (let i = 0;i<records.length;i++){
+                 $this.task.push({
+                     value:records[i],
+                     key:i
+                 })
+              }
+         }
+     } 
+     
+     ```
+
+     
+

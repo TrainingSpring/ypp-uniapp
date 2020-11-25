@@ -85,6 +85,7 @@ function showInfo(type:Boolean,data:any) {
  */
 function surplusTime(endTime:any) {
     // let st = new Date(startTime).getTime(); // 开始时间  start time
+    if (typeof endTime === "string") endTime = parseInt(endTime)*1000;
     let st = new Date().getTime(); // 开始时间  start time
     let et = new Date(endTime).getTime();   // 结束时间  end time
     let down = et-st;   // 剩余时间

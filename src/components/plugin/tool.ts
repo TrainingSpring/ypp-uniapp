@@ -147,6 +147,7 @@ Tools.prototype.mixinObject = function(keys:string[],values:any[]){
  * @param fmt
  */
 Tools.prototype.formatDate = function(date:any,type:number,fmt:string = "yyyy-MM-dd hh:mm:ss") {
+	if (typeof date === "string") date = parseInt(date)*1000;
 	let time = new Date(date);
 	let mart = type === 0?"-":type === 1?"/":null;
 	let year = time.getFullYear(); // 年

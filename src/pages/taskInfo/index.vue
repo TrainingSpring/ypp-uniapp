@@ -1,6 +1,6 @@
 <template>
     <view class="task">
-        <card class="header" style="padding: 20upx 35upx;" >
+        <card class="header" padding="10px 17px" >
             <view class="dateHint">
                 游戏任务时间：{{game.startTime}}-{{game.endTime}}
             </view>
@@ -29,7 +29,7 @@
                 </view>
             </view>
         </card>
-        <card class="userInfo" style="padding: 20upx 35upx;" title="请输入账号信息">
+        <card class="userInfo" padding="10px 17px" title="账号信息">
             <view class="right" v-if="!roleInfo">
                 <bgi src="task/zq.png" class="btn" @tap="goBindInfo">
                     <text>马上去</text>
@@ -39,11 +39,11 @@
                 <view class="li">账号: {{roleInfo.account}}</view>
                 <view class="li">角色: {{roleInfo.role}}</view>
                 <view class="li">等级: {{roleInfo.level}}</view>
-                <view class="li">充值金额: {{roleInfo.money}}元</view>
-                <view class="finish">
-                    <view class="getMoney">+{{tools.formatMoney(game.finishedMoney)}}元</view>
+<!--                <view class="li">充值金额: {{roleInfo.money}}元</view>-->
+              <!--  <view class="finish">
+                    <view class="getMoney">+{{game.finishedMoney}}元</view>
                     <view class="getText">奖励已领取</view>
-                </view>
+                </view>-->
             </view>
         </card>
         <card class="desc" padding="10px 18px;" title="游戏简介">
@@ -57,7 +57,7 @@
             </view>
             <view class="hint"><text>请切勿在其他平台或跳转"应用商店"安装,否则将无法获得奖励</text></view>
             <!--   任务列表   -->
-            <task-list v-for="item in task" v-if="task.length >0" v-model="item" :roleInfo="roleInfo" @onBindRoleInfo="goBindInfo"></task-list>
+            <task-list v-for="item in task" v-if="task.length >0" v-model="item.value" :roleInfo="roleInfo" @onBindRoleInfo="goBindInfo"></task-list>
             <view v-if="task.length <= 0" class="text-center text-gray padding">暂时没有任务</view>
             <!--<view class="task-item" v-for="(item,index) in task">
                 <view class="left">
@@ -90,6 +90,7 @@
         <view class="page-bottom">
             <view class="server">
                 <view class="icon">
+<!--                    {{util.getStaticUrl('task/server.png')}}-->
                     <image :src="util.getStaticUrl('task/server.png')"></image>
                 </view>
                 <view class="text">联系客服</view>
@@ -159,7 +160,7 @@
                                     <input type="text" id="account" v-model="bindModal.account" placeholder="请输入游戏账号">
                                 </view>
 
-                                <bgi class="get-info btn" src='task/border.png' @tap="searchRoleInfo"><text>点击查询</text></bgi>
+                                <bgi class="get-info btn" src='task/border.png' @tap="modalSearchRoleInfo"><text>点击查询</text></bgi>
                             </view>
                             <view class="row">
                                 <i class="iconfont icon-role"></i>
@@ -288,6 +289,8 @@
                         console.log(res_data,"游戏详情");
                         let res = res_data.result;
                         let surTime = $this.util.surplusTime(res.endTime);
+                        let startTime = $this.tools.formatDate(res.startTime, 0, "MM月dd日 hh时"),  // 开始时间
+                            endTime = $this.tools.formatDate(res.endTime, 0, "MM月dd日 hh时");
                         // console.log(down_str);
                         $this.game = { // 游戏信息
                             android:res.androidDownUrl,  // 安卓下载地址
@@ -306,8 +309,8 @@
                             serverId: res.serverId,         // 区服id
                             time: surTime,            // 剩余时间
                             finishedMoney: 100,  //  已完成的任务的总金额
-                            startTime: $this.util.formatDate(res.startTime, 0, "MM月dd日 hh时"),  // 开始时间
-                            endTime: $this.util.formatDate(res.endTime, 0, "MM月dd日 hh时"),  // 结束时间
+                            startTime,  // 开始时间
+                            endTime,  // 结束时间
                         };
                         $this.init($this.game);
                     }else{
@@ -344,7 +347,15 @@
                     success(res){
                         let r_data = res.data;
                         if (r_data.code === 200) {
-                            $this.task = r_data.result.records;
+                            let records = r_data.result.records;
+                            for (let i = 0;i<records.length;i++){
+                                $this.task.push({
+                                    value:records[i],
+                                    key:i
+                                })
+                            }
+
+
                         }else{
                             $this.util.showInfo(0,r_data);
                         }
@@ -367,6 +378,7 @@
                                 account:data.result.account,
                                 role:data.result.roleName
                             };
+                            $this.searchRole($this.roleInfo.account);
                         }
                     }
                 })
@@ -543,29 +555,21 @@
             },
             /**
              * 查询角色信息
-             */
-            searchRoleInfo(){
+             * **/
+            searchRole(account){
                 let $this = this;
-                // userId:"56453791",
-                // gameName:"轩辕剑群侠录商城版",
-                // serverName:"宝石1区"
-                if (!$this.bindModal.account)
-                    return uni.showToast({
-                        title:"请输入账号",
-                        icon:"none"
-                    });
                 uni.request({
                     url:$this.util.getApiUrl("/request/post"),
                     data:{
                         url:"http://sdk.msg.server.90yx.cn/sdk/game_user_role_new",
-                            userId: $this.bindModal.account, //56454370, // $this.bindModal.account,
-                            gameName: $this.game.name,// "三国计", // $this.game.name,
-                            serverName: $this.game.server // "战火连天1区" //$this.game.server
+                        userId: account, //56454370, // $this.bindModal.account,
+                        gameName: $this.game.name,// "三国计", // $this.game.name,
+                        serverName: $this.game.server // "战火连天1区" //$this.game.server
 
                     },
                     method:"POST",
                     header:{
-                      "Content-Type":'application/x-www-form-urlencoded'
+                        "Content-Type":'application/x-www-form-urlencoded'
                     },
                     success:function (result) {
                         if (result.data.code === 200) {
@@ -573,6 +577,7 @@
                                 if(result.data.result.info.length > 0){
                                     $this.bindModal.data = result.data.result.info;
                                     $this.bindModal.level = result.data.result.info[0]["cp_role_level"]
+                                    if (!!$this.roleInfo) $this.roleInfo.level = $this.bindModal.level ;
                                 }else{
                                     uni.showToast({
                                         title:"未查询到该账号的角色信息!",
@@ -595,20 +600,53 @@
                 })
             },
             /**
+             * 模态框中查询角色信息
+             */
+            modalSearchRoleInfo(){
+                let $this = this;
+                // userId:"56453791",
+                // gameName:"轩辕剑群侠录商城版",
+                // serverName:"宝石1区"
+                if (!$this.bindModal.account)
+                    return uni.showToast({
+                        title:"请输入账号",
+                        icon:"none"
+                    });
+                this.searchRole($this.bindModal.account);
+            },
+            /**
              * 绑定游戏角色信息
              * 立即绑定按钮
              */
             bindRoleInfo(){
                 let $this = this;
+                let index = this.bindModal.index;
+                let uid = uni.getStorageSync("loginInfo").uid;
                 uni.request({
                     url:$this.util.getApiUrl("/yppUser/bind_user_game_account"),
+                    method:"POST",
                     data:{
-                        account:$this.roleInfo.account,
-                        gameId:$this.info.id,
-                        gameName:$this.info.name,
-                        roleName:$this.roleInfo.role,
-                        serverName:$this.info.server,
-                        serverId:$this.info.serverId
+                        uid,
+                        account:$this.bindModal.account,
+                        gameId:$this.game.gameId,
+                        gameName:$this.game.name,
+                        roleName:$this.bindModal.data[index].cp_role_name,
+                        serverName:$this.game.server,
+                        serverId:$this.game.serverId
+                    },
+                    success(res){
+                        let data = res.data;
+                        if (data.code === 200){
+                            $this.roleInfo = {
+                                account:$this.bindModal.account,
+                                role:$this.bindModal.data[index]["cp_role_name"],
+                                level:$this.bindModal.level
+                            };
+                            $this.bindModal.show = false;
+                            $this.util.showInfo(1,data);
+                        }else{
+                            $this.util.showInfo(0,data)
+                        }
                     }
                 })
             }
