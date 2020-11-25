@@ -68,7 +68,7 @@
         name: "task-list",
         data(){
             return{
-
+                data:this.value,
                 hint:{  // 提示信息
                     show:false,
                     icon:undefined,
@@ -88,11 +88,6 @@
         },
         components:{
             hint
-        },
-        watch:{
-            data(o,n){
-                console.log("][][][][][][][][][", o, n);
-            }
         },
         methods:{
             // 因为获取到的时间是:123:12:12 这种格式
@@ -138,10 +133,18 @@
                 let hint = this.hint;
                 let $this = this;
                 let loginInfo = uni.getStorageSync("loginInfo");
+                let roleInfo = this.roleInfo;
                 // 未登录
                 if (!loginInfo) return uni.navigateTo({
                     url:"../../pages/login/index"
                 });
+                else if (!roleInfo){
+                    uni.showToast({
+                        title:"请先绑定角色信息!",
+                        icon:"none"
+                    });
+                    return $this.$emit("onBindRoleInfo"); // 没有绑定角色信息  触发绑定角色信息事件
+                }
                 // 已登录
                 if (state === 1 || state === 2)return;
                 let setInfo = (options={})=>{
@@ -150,10 +153,9 @@
                 uni.showLoading({
                     title:"请稍后"
                 });
+
                 if(state === 0){ // 提交任务
                     // 提交ajax
-
-                    let hintState = 1;   // 0失败
                     uni.hideLoading();
                     this.hintClick = function (res) {
                         if (res === 0) this.hint.show = false;
@@ -172,8 +174,8 @@
                                     $this.hint.show = false;
                                     if (res.data.code === 200) {
                                         uni.hideLoading();
-                                        console.log($this.data[index]);
-                                        // $this.data[index]["submitStatus"] = 1;
+                                        $this.$set($this.data,"submitStatus",1);
+                                        $this.$emit("input",$this.data);
                                         $this.util.showInfo(1,res.data);
                                     }else{
                                         $this.util.showInfo(0,res.data);
@@ -225,7 +227,8 @@
                                     hintTitle:"恭喜领取成功",
                                     hintCont:"您已领取试玩任务成功，请尽快完成试玩任务"
                                 });
-                                $this.data[index].submitStatus = 0;
+                                $this.$set($this.data,"submitStatus",0);
+                                $this.$emit("input",$this.data);
                             }else{
                                 setInfo({
                                     icon:$this.util.getStaticUrl("hint/fail.png"),
@@ -242,7 +245,7 @@
             },
         },
         props:{
-            data:{
+            value:{
                 type:[Array,Object],
                 default(){
                     return []
@@ -252,6 +255,12 @@
                 type:Number,
                 default(){
                     return 0;
+                }
+            },
+            roleInfo:{
+                type:Object,
+                default(){
+                    return null;
                 }
             }
         }

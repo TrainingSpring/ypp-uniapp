@@ -28,36 +28,12 @@
         },
         mounted(){
             let $this = this;
-            uni.login({
-                success(res){
-                    if (res.errMsg === "login:ok") {
-                        uni.request({
-                            url:$this.util.getApiUrl("/yppUser/login_wechat"),
-                            method:"POST",
-                            data:{
-                                wechatCode:res.code
-                            },
-                            success(suc){
-                                let data = suc.data;
-                                if (data.code === 200) {
-                                    $this.uid = data.result.uid;
-                                    uni.setStorage({
-                                        key:"loginInfo",
-                                        data:data.result
-                                    })
-                                }else{
-                                    $this.util.showInfo(0,data);
-                                }
-                            }
-                        })
-                    }
-                },
-                fail(err){
 
-                }
-            });
         },
         methods:{
+            /**
+             * 登录点击
+             * */
             login:function (res) {
                 uni.showLoading({
                     title:"请稍后...",
@@ -67,44 +43,81 @@
                 let state = detail.errMsg;
                 let $this = this;
                 console.log(res);
-                if(state === "getUserInfo:fail auth deny"){
+                if(state === "getUserInfo:fail auth deny"){  // 取消授权
                         uni.showToast({
                             title:"授权失败!",
                             icon:'none'
                         })
                     }else{
-                        let userInfo = detail.userInfo;
-                        let uid = $this.uid;
-
-                        uni.request({
-                            url:$this.util.getApiUrl("/yppUser/save_user_info_wechat"),
-                            method:"POST",
-                            data:{
-                                uid:uid,
-                                rawData:detail.rawData,
-                                signature:detail.signature,
-                                iv:detail.iv,
-                                encryptedData:detail.encryptedData
-                            },
-                            success(response){
-                                if (response.data.code === 200) {
-                                    uni.setStorage({
-                                        key:'userInfo',
-                                        data:userInfo,
-                                        success(){
-                                            // 保存到storage成功后 跳转页面
-                                            /*uni.switchTab({
-                                                url:"/pages/index/index"
-                                            });*/
-                                            // 返回上一个页面
-                                            uni.navigateBack({})
+                    // 成功授权
+                    uni.login({
+                        success(res){
+                            if (res.errMsg === "login:ok") {
+                                // 获取code  以此获取uid
+                                uni.request({
+                                    url:$this.util.getApiUrl("/yppUser/login_wechat"),
+                                    method:"POST",
+                                    data:{
+                                        wechatCode:res.code
+                                    },
+                                    success(suc){
+                                        let data = suc.data;
+                                        if (data.code === 200) {
+                                            let uid = $this.uid = data.result.uid;
+                                            // 保存登录的uid等信息
+                                            uni.setStorage({
+                                                key:"loginInfo",
+                                                data:data.result,
+                                                success(){
+                                                    // 获取到授权信息(用户微信开放信息)
+                                                    let userInfo = detail.userInfo;
+                                                    // 保存用户登录信息到服务器
+                                                    uni.request({
+                                                        url:$this.util.getApiUrl("/yppUser/save_user_info_wechat"),
+                                                        method:"POST",
+                                                        data:{
+                                                            uid:uid,
+                                                            rawData:detail.rawData,
+                                                            signature:detail.signature,
+                                                            iv:detail.iv,
+                                                            encryptedData:detail.encryptedData
+                                                        },
+                                                        success(response){
+                                                            // 保存成功...
+                                                            if (response.data.code === 200) {
+                                                                // 添加到本地缓存
+                                                                uni.setStorage({
+                                                                    key:'userInfo',
+                                                                    data:userInfo,
+                                                                    success(){
+                                                                        // 保存到storage成功后 跳转页面
+                                                                        /*uni.switchTab({
+                                                                            url:"/pages/index/index"
+                                                                        });*/
+                                                                        // 返回上一个页面
+                                                                        uni.navigateBack({})
+                                                                    }
+                                                                });
+                                                            }else{
+                                                                // 失败提示
+                                                                $this.util.showInfo(0,response.data);
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                        }else{
+                                            $this.util.showInfo(0,data);
                                         }
-                                    });
-                                }else{
-                                    $this.util.showInfo(0,response.data);
-                                }
+                                    }
+                                })
                             }
-                        });
+                        },
+                        fail(err){
+
+                        }
+                    });
+
 
                     }
                 console.log(res);

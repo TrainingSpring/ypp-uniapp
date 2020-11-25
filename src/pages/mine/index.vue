@@ -33,7 +33,7 @@
                         <view class="text">总试玩(个)</view>
                         <view class="question">
                             <view class="iconfont icon-yiwen" @tap="onHint">
-                                <bgi class="hint" :src="util.getStaticUrl('mine/hint.png')" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
+                                <bgi class="hint" src="mine/hint.png" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
                             </view>
 
                         </view>
@@ -100,7 +100,7 @@
                         <view class="text">总试玩(个)</view>
                         <view class="question">
                             <view class="iconfont icon-yiwen">
-                                <bgi class="hint" :src="util.getStaticUrl('mine/hint.png')" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
+                                <bgi class="hint" src="mine/hint.png" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
                             </view>
 
                         </view>

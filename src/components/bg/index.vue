@@ -1,7 +1,7 @@
 <!--设置背景图片-->
 <template>
     <view class="T-background">
-        <image :src="src"></image>
+        <image :src="url"></image>
         <view><slot></slot></view>
     </view>
 </template>
@@ -11,8 +11,11 @@
         name: "t-bg",
         data(){
             return{
-
+                url:undefined
             }
+        },
+        mounted(){
+            this.url = this.util.getStaticUrl(this.src);
         },
         props:{
             src:String

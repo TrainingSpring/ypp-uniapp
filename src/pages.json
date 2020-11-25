@@ -154,7 +154,8 @@
 				"backgroundColor": "#F2F2F2",
 				"navigationBarTitleText": "任务详情",
 				"navigationBarBackgroundColor": "#60A9FD",
-				"navigationBarTextStyle": "white"
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": true
 			}
 		},
 		{

@@ -10,7 +10,7 @@
                 <view class="val"><input type="text" placeholder="请输入微信认证姓名" v-model="wx_name"></view>
             </view>
         </card>-->
-        <bgi class="top" :src="util.getStaticUrl('withdraw/bg.png')">
+        <bgi class="top" src="withdraw/bg.png">
             <view class="cont">
                 <view class="balance">{{tools.formatMoney(balance)}}</view>
                 <view class="text">总余额</view>

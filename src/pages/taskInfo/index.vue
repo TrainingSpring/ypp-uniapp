@@ -31,7 +31,7 @@
         </card>
         <card class="userInfo" style="padding: 20upx 35upx;" title="请输入账号信息">
             <view class="right" v-if="!roleInfo">
-                <bgi :src="util.getStaticUrl('task/zq.png')" class="btn" @tap="goBindInfo">
+                <bgi src="task/zq.png" class="btn" @tap="goBindInfo">
                     <text>马上去</text>
                 </bgi>
             </view>
@@ -46,18 +46,18 @@
                 </view>
             </view>
         </card>
-        <card class="desc" style="padding: 20upx 35upx;" title="游戏简介">
+        <card class="desc" padding="10px 18px;" title="游戏简介">
             {{game.desc}}
         </card>
-        <card class="taskList" title="试玩奖励">
-            <view class="tab">
+        <card class="taskList" padding="10px 18px" title="试玩奖励">
+            <view class="tab solid-bottom" >
                 <view class="tab-item active">任务奖励</view>
-                <view class="tab-item">消耗奖励</view>
-                <view class="tab-item">额外奖励</view>
+<!--                <view class="tab-item">消耗奖励</view>-->
+<!--                <view class="tab-item">额外奖励</view>-->
             </view>
             <view class="hint"><text>请切勿在其他平台或跳转"应用商店"安装,否则将无法获得奖励</text></view>
             <!--   任务列表   -->
-            <task-list v-for="item in task" v-if="task.length >0" :data="item"></task-list>
+            <task-list v-for="item in task" v-if="task.length >0" v-model="item" :roleInfo="roleInfo" @onBindRoleInfo="goBindInfo"></task-list>
             <view v-if="task.length <= 0" class="text-center text-gray padding">暂时没有任务</view>
             <!--<view class="task-item" v-for="(item,index) in task">
                 <view class="left">
@@ -148,7 +148,7 @@
         <view class="cu-modal bind-account-info" @tap="modalHide(3)" :class="bindModal.show?'show':''">
             <view class="cu-dialog" @tap.stop="clearPre">
                 <view class="top">
-                    <bgi class="title" :src="util.getStaticUrl('taskInfo/title_bg.png')"><text>请填写游戏信息</text></bgi>
+                    <bgi class="title" src="taskInfo/title_bg.png"><text>请填写游戏信息</text></bgi>
                 </view>
                 <view class="cu-form-group">
                     <view id="bind_info">
@@ -159,7 +159,7 @@
                                     <input type="text" id="account" v-model="bindModal.account" placeholder="请输入游戏账号">
                                 </view>
 
-                                <bgi class="get-info btn" :src="util.getStaticUrl('task/border.png')" @tap="searchRoleInfo"><text>点击查询</text></bgi>
+                                <bgi class="get-info btn" src='task/border.png' @tap="searchRoleInfo"><text>点击查询</text></bgi>
                             </view>
                             <view class="row">
                                 <i class="iconfont icon-role"></i>
@@ -254,7 +254,7 @@
                 },
                 storage:{
                     loginInfo:uni.getStorageSync("loginInfo")
-                }
+                },
             }
         },
         components:{
@@ -262,6 +262,10 @@
             card,
             hint,
             taskList
+        },
+        // 下拉刷新
+        onPullDownRefresh(){
+            this.init(this.game);
         },
         onLoad(arg){
             let data = JSON.parse(arg.data);  // 游戏的基本信息;
@@ -283,7 +287,7 @@
                     if (res_data.code === 200) {
                         console.log(res_data,"游戏详情");
                         let res = res_data.result;
-                        let surTime = $this.util.surplusTime(res.startTime,res.endTime);
+                        let surTime = $this.util.surplusTime(res.endTime);
                         // console.log(down_str);
                         $this.game = { // 游戏信息
                             android:res.androidDownUrl,  // 安卓下载地址
@@ -564,11 +568,19 @@
                       "Content-Type":'application/x-www-form-urlencoded'
                     },
                     success:function (result) {
-                        console.log(result.data.result);
                         if (result.data.code === 200) {
                             if (result.data.result.status === 0) {
-                                $this.bindModal.data = result.data.result.info;
-                                $this.bindModal.level = result.data.result.info[0]["cp_role_level"]
+                                if(result.data.result.info.length > 0){
+                                    $this.bindModal.data = result.data.result.info;
+                                    $this.bindModal.level = result.data.result.info[0]["cp_role_level"]
+                                }else{
+                                    uni.showToast({
+                                        title:"未查询到该账号的角色信息!",
+                                        icon:"none",
+                                        duration:3000
+                                    })
+                                }
+
                             }else
                                 uni.showToast({
                                     title:result.data.result.info,

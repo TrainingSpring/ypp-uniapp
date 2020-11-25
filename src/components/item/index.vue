@@ -23,7 +23,7 @@
         </view>
         <view class="progress" v-if="!showProgress"></view>
         <view class="get-money">
-            <bgi v-if="btnType==0" class="btn" :src="util.getStaticUrl('btn/'+(btnState==0?'btn.png':btnState === 1?'btn_1.png':'btn_2.png'))"><view style="width:117upx;margin-left: 8upx;text-align: center;">{{btnText}}</view></bgi>
+            <bgi v-if="btnType==0" class="btn" :src="'btn/'+(btnState==0?'btn.png':btnState === 1?'btn_1.png':'btn_2.png')"><view style="width:117upx;margin-left: 8upx;text-align: center;">{{btnText}}</view></bgi>
             <view v-if="btnType==1" class="btn" style="background: #95C9FC;border-radius: 23upx;"><view style="text-align: center;">{{btnText}}</view></view>
             <view class="money">+{{(data.money) || data.awardMoney}}元</view>
         </view>

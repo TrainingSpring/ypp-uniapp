@@ -1,6 +1,6 @@
 <template>
     <view class="balance">
-        <bgi :src="util.getStaticUrl('balance/bg.png')" class="top">
+        <bgi src="balance/bg.png" class="top">
             <view class="info">
                 <view class="title">我的余额</view>
                 <view class="money">￥ {{balance}}</view>

@@ -80,12 +80,7 @@
                     return 0;
                 }
             },
-          /*  search:{
-                type:String,
-                default() {
-                    return null;
-                }
-            }*/
+
         },
         mounted(){
             this.init();
