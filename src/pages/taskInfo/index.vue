@@ -88,13 +88,13 @@
         </card>
         <view class="space"></view>
         <view class="page-bottom">
-            <view class="server">
+            <button class="server" open-type="contact">
                 <view class="icon">
 <!--                    {{util.getStaticUrl('task/server.png')}}-->
                     <image :src="util.getStaticUrl('task/server.png')"></image>
                 </view>
                 <view class="text">联系客服</view>
-            </view>
+            </button>
             <view class="btn" @tap="startTry">
                 {{!login?"点击登录开始试玩":"开始试玩"}}
             </view>
@@ -890,11 +890,17 @@
             justify-content: space-around;
             align-items: center;
             border-top: 1px solid #eee;
+            .server::after{
+                border: none;
+            }
             .server{
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                padding: 0;
+                height: 100%;
+                background-color: white;
                 /*margin-left:58upx;*/
                 .icon{
                     width: 77upx;
