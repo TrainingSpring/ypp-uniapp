@@ -27,7 +27,7 @@
                     </view>
                     <view class="cu-load cuIcon-loading loading text-black" v-if="loading"></view>
                 </scroll-view>
-                <view v-if="list[_index].length === 0 || !list[_index]" class="none" style="display: flex; height: calc(100% - 90upx);justify-content: center;align-items: center;margin-top: 30upx;">
+                <view v-if="!list[_index] || list[_index].length === 0 " class="none" style="display: flex; height: calc(100% - 90upx);justify-content: center;align-items: center;margin-top: 30upx;">
                     <image :src="util.getStaticUrl('none.png')" style="width: 80%;"></image>
                 </view>
             </swiper-item>
@@ -74,7 +74,6 @@
                 let index = this.current;
                 let pages = this.pages[index];
 
-                console.log(pages.page, pages.total);
                 if (pages.page < pages.total){
                     this.loading = true;
                     this.getTaskList(++pages.page,index);
@@ -87,8 +86,6 @@
                 let list = this.list[index];
                 this.current = index;
                 if (!list) this.getTaskList(1,index);
-
-                console.log(data,index);
             },
             // 格式化数据时间
             formatEndTime(time){

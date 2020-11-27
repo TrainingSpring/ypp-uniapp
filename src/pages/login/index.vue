@@ -44,6 +44,7 @@
                 let $this = this;
                 console.log(res);
                 if(state === "getUserInfo:fail auth deny"){  // 取消授权
+                    uni.hideLoading();
                         uni.showToast({
                             title:"授权失败!",
                             icon:'none'
@@ -54,6 +55,7 @@
                         success(res){
                             if (res.errMsg === "login:ok") {
                                 // 获取code  以此获取uid
+                                uni.hideLoading();
                                 uni.request({
                                     url:$this.util.getApiUrl("/yppUser/login_wechat"),
                                     method:"POST",
@@ -114,7 +116,10 @@
                             }
                         },
                         fail(err){
-
+                            uni.showToast({
+                                title:"[错误]"+err.errMsg,
+                                icon:"none"
+                            })
                         }
                     });
 

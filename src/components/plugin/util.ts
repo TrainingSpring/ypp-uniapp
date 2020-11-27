@@ -3,8 +3,8 @@
  * @param url
  */
 function getApiUrl(url: string | undefined){
-    // return "http://192.168.1.44:8001/front" + url;  // 本地测试服务器地址
-    return "https://ypp2-front-test.a345.cn/front" + url;
+    return "http://192.168.1.44:6001/front" + url;  // 本地测试服务器地址
+    // return "https://ypp2-front-test.a345.cn/front" + url;
 }
 /**
  * 获取静态文件的url前缀

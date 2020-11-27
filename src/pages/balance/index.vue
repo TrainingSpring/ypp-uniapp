@@ -29,7 +29,7 @@
             <view v-if="details.length === 0" class="text-center text-sm text-gray padding">暂无提现记录</view>
         </view>
         <view class="btn-group withdraw">
-            <navigator url="../withdraw/index" class="cu-btn bg-blue lg">去提现</navigator>
+            <view class="cu-btn bg-blue lg" style="width: 100%;" @tap="gotoWithdraw">去提现</view>
         </view>
 
     </view>
@@ -54,6 +54,38 @@
             this.init();
         },
         methods:{
+            gotoWithdraw(){
+                let real = null;
+                let uid = uni.getStorageSync("loginInfo").uid;
+                let $this = this;
+                uni.request({
+                    url:$this.util.getApiUrl("/yppUser/check_user_is_realName_authentication"),
+                    method:"POST",
+                    data:{
+                        uid
+                    },
+                    success(res){
+                        let data = res.data;
+                        if (data.code === 200 && !!data.result) {
+                            uni.navigateTo({
+                                url:"../withdraw/index",
+                            })
+                        }else{
+                            uni.showModal({
+                                title:"请先实名认证",
+                                confirmText:"去实名",
+                                success(res){
+                                    let confirm = res.confirm;
+                                    if (confirm)
+                                        uni.navigateTo({
+                                            url:"../realName/index"
+                                        });
+                                }
+                            });
+                        }
+                    }
+                })
+            },
             /**
              * 初始化
              */

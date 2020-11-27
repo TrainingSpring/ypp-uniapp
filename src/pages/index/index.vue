@@ -18,7 +18,7 @@
                         </view>
                         <view class="right">
                             <view class="nick">{{swiperList[0].nick}}</view>
-<!--                            <view class="recommend">了解试玩游戏 <text class="cuIcon-playfill"></text></view>-->
+<!--                            <view class="recommend">了解任务游戏 <text class="cuIcon-playfill"></text></view>-->
                         </view>
                     </view>
                     <view class="earning">
@@ -32,7 +32,7 @@
                         </view>
                         <view class="earning-item">
                             <view class="money">{{swiperList[0].earning[2]}}</view>
-                            <view class="text">总试玩(个)</view>
+                            <view class="text">总任务(个)</view>
                         </view>
                     </view>
                 </swiper-item>
@@ -50,11 +50,11 @@
             </view>
             <view class="menu-item" @tap="toNewPage('../myTry/index')">
                 <view class="icon"><image :src="util.getStaticUrl('home/menu2.png')"></image></view>
-                <view class="text">我的试玩</view>
+                <view class="text">我的任务</view>
             </view>
             <view class="menu-item" @tap="toNewPage('../tryPrediction/index')">
                 <view class="icon"><image :src="util.getStaticUrl('home/menu3.png')"></image></view>
-                <view class="text">试玩计划</view>
+                <view class="text">任务计划</view>
             </view>
         </view>
         <view class="space"></view>
@@ -66,6 +66,7 @@
             </view>
             <scroll-view :scroll-y="true">
                 <t-item v-for="item in today" :data="item" @ontap="showDetail(item)"> </t-item>
+                <view class="padding text-gray margin-top text-center">暂无推荐数据...</view>
             </scroll-view>
         </view>
 	</view>

@@ -71,7 +71,7 @@
             type:{
                 type:[Number|String],
                 default() {
-                    return 0;  // 0 默认模式   1 我的试玩
+                    return 0;  // 0 默认模式   1 我的任务
                 }
             },
             currentSort:{
@@ -115,10 +115,10 @@
                 console.log("search",this.search)
                 let url = null;
                 let uid = null;
-                if (this.type == 1){   // 我的试玩
+                if (this.type == 1){   // 我的任务
                     url = "/yppGame/get_sort_user_games_page";
                     uid = $this.storage.loginInfo.uid;
-                }else if(this.type == 2){  // 试玩预告
+                }else if(this.type == 2){  // 任务预告
                     url = "/yppGame/get_game_will_be_start_page";
                 }
                 this.util.getGameInfo({

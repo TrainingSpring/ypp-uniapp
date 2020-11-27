@@ -76,7 +76,7 @@
                 </view>
                 <view class="cu-bar bg-white justify-end">
                     <view class="action text-center" style="width: 100%">
-                        <button class="cu-btn bg-blue margin-left" @tap.stop="confirmWithdra">确定</button>
+                        <button class="cu-btn bg-blue margin-left" @tap.stop="confirmWithdraw">确定</button>
                     </view>
                 </view>
             </view>
@@ -138,7 +138,7 @@
                     bank:false
                 },
                 wx_name:"",  // 微信名称
-                balance:1238,  // 余额
+                balance:0,  // 余额
                 tax:0.07,   // 个人所得税税率
                 tools,
                 bank:{
@@ -174,6 +174,40 @@
             bgi
         },
         methods: {
+            hideModal(){
+              this.modal.hint = false;
+            },
+            /**
+             * 确认体现按钮
+             * */
+            confirmWithdraw(){
+                let uid = uni.getStorageSync("loginInfo").uid;
+                let $this = this;
+                let withdrawMoney = this.withdraw.money;
+                let bankCardId = this.bank.id;
+                uni.showLoading({
+                    title:"请稍后..."
+                });
+                uni.request({
+                    url:$this.util.getApiUrl("/yppUser/apply_withdraw"),
+                    data:{
+                        uid,
+                        withdrawMoney,
+                        bankCardId
+                    },
+                    method:"POST",
+                    success(res){
+                        uni.hideLoading();
+                        let data = res.data;
+                        if (data.code === 200) {
+                            $this.util.showInfo(1,data);
+                        }else{
+                            $this.util.showInfo(0,data);
+                        }
+                        $this.modal.hint = false;
+                    }
+                })
+            },
             /**
              * @desc 获取用户银行卡列表
              **/
@@ -240,7 +274,7 @@
                         title:"提现金额不得大于余额",
                         icon:"none"
                     })
-                }else if(!this.bank.cardId){
+                }else if(!this.bank.bankCardNum){
                    return uni.showModal({
                         title:"提示",
                         content:"请选择银行卡",

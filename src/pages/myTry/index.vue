@@ -1,4 +1,4 @@
-<!--我的试玩-->
+<!--我的任务-->
 <template>
     <view class="try">
         <view class="search">
@@ -49,7 +49,7 @@
                 loading:false,
                 sort:[
                     {text:"默认排序",value:0},
-                    {text:"最近试玩",value:1},
+                    {text:"最近任务",value:1},
                     {text:"即将到期",value:2}
                 ],
                 modal:{

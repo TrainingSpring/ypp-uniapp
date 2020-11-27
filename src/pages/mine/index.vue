@@ -16,7 +16,7 @@
                     <view class="right">
                         <view class="nick">{{userInfo.nick}}</view>
                         <navigator url="../balance/index" class="balance">余额(元)：{{userInfo.balance}}</navigator>
-                        <!--                            <view class="recommend">了解试玩游戏 <text class="cuIcon-playfill"></text></view>-->
+                        <!--                            <view class="recommend">了解任务游戏 <text class="cuIcon-playfill"></text></view>-->
                     </view>
                 </view>
                 <view class="earning">
@@ -30,10 +30,10 @@
                     </view>
                     <view class="earning-item">
                         <view class="money">{{userInfo.earning[2]}}</view>
-                        <view class="text">总试玩(个)</view>
+                        <view class="text">总任务(个)</view>
                         <view class="question">
                             <view class="iconfont icon-yiwen" @tap="onHint">
-                                <bgi class="hint" src="mine/hint.png" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
+                                <bgi class="hint" src="mine/hint.png" :style="{display:hint?'block':'none'}"><text>总任务数字为已完成任务任务</text></bgi>
                             </view>
 
                         </view>
@@ -43,7 +43,7 @@
                 <view class="menu-item">
                     <navigator url="/pages/myTry/index">
                         <view class="icon"><image :src="util.getStaticUrl('mine/icon_1.png')"></image></view>
-                        <view class="text">我的试玩</view>
+                        <view class="text">我的任务</view>
                     </navigator>
                 </view>
                 <view class="menu-item">
@@ -83,7 +83,7 @@
                     <view class="right">
                         <view class="nick">前往登录</view>
                         <view class="balance">余额(元)：0</view>
-                        <!--                            <view class="recommend">了解试玩游戏 <text class="cuIcon-playfill"></text></view>-->
+                        <!--                            <view class="recommend">了解任务游戏 <text class="cuIcon-playfill"></text></view>-->
                     </view>
                 </view>
                 <view class="earning">
@@ -97,10 +97,10 @@
                     </view>
                     <view class="earning-item">
                         <view class="money">0</view>
-                        <view class="text">总试玩(个)</view>
+                        <view class="text">总任务(个)</view>
                         <view class="question">
                             <view class="iconfont icon-yiwen">
-                                <bgi class="hint" src="mine/hint.png" :style="{display:hint?'block':'none'}"><text>总试玩数字为已完成试玩任务</text></bgi>
+                                <bgi class="hint" src="mine/hint.png" :style="{display:hint?'block':'none'}"><text>总任务数字为已完成任务任务</text></bgi>
                             </view>
 
                         </view>
@@ -110,7 +110,7 @@
                 <view class="menu-item">
                     <view>
                         <view class="icon"><image :src="util.getStaticUrl('mine/icon_1.png')"></image></view>
-                        <view class="text">我的试玩</view>
+                        <view class="text">我的任务</view>
                     </view>
                 </view>
                 <view class="menu-item">
@@ -387,7 +387,7 @@
 
             },
             /**
-             * 打开/关闭 试玩提示
+             * 打开/关闭 任务提示
              */
             onHint:function () {
                 this.hint = !this.hint;

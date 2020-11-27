@@ -49,7 +49,7 @@
         <card class="desc" padding="10px 18px;" title="游戏简介">
             {{game.desc}}
         </card>
-        <card class="taskList" padding="10px 18px" title="试玩奖励">
+        <card class="taskList" padding="10px 18px" title="任务奖励">
             <view class="tab solid-bottom" >
                 <view class="tab-item active">任务奖励</view>
 <!--                <view class="tab-item">消耗奖励</view>-->
@@ -73,7 +73,7 @@
                 <view class="center">
                     <view class="top">1</view>
                     <view class="bottom">
-                        试玩名额：{{item.taskNum - item.remainNum}}/{{item.taskNum}}
+                        任务名额：{{item.taskNum - item.remainNum}}/{{item.taskNum}}
                     </view>
                 </view>
                 <view class="right">
@@ -96,7 +96,7 @@
                 <view class="text">联系客服</view>
             </button>
             <view class="btn" @tap="startTry">
-                {{!login?"点击登录开始试玩":"开始试玩"}}
+                {{!login?"点击登录开始任务":"开始任务"}}
             </view>
         </view>
 <!--    领取以及提交任务模态框    -->
@@ -116,7 +116,7 @@
         >
             <view class="hint-msg-1" v-if="hint.type === 1">
                 <view class="title" style="padding-top:89px;">任务完成</view>
-                <view class="detail">提交审核领取试玩奖励！</view>
+                <view class="detail">提交审核领取任务奖励！</view>
             </view>
             <view class="hint-msg-0" v-if="hint.type !== 1">
                 <view class="title" style="padding-top:50px;">{{hint.hintTitle}}</view>
@@ -135,9 +135,9 @@
                     </view>
                 </view>
                 <view class="padding-xl text-left text-xs">
-                    <view class="li">试玩名额: {{taskModal.nums}}人已完成/剩余数:{{taskModal.sum - taskModal.nums}}</view>
-                    <view class="li">试玩时间: {{taskModal.endTime}} 截止</view>
-                    <view class="li">试玩条件: {{taskModal.condition}}</view>
+                    <view class="li">任务名额: {{taskModal.nums}}人已完成/剩余数:{{taskModal.sum - taskModal.nums}}</view>
+                    <view class="li">任务时间: {{taskModal.endTime}} 截止</view>
+                    <view class="li">任务条件: {{taskModal.condition}}</view>
                     <view class="li">如有其他问题请联系客服（9:00-18:00）</view>
                 </view>
                 <view class="cu-bar bg-white justify-end">
@@ -348,6 +348,7 @@
                         let r_data = res.data;
                         if (r_data.code === 200) {
                             let records = r_data.result.records;
+                            $this.task = [];
                             for (let i = 0;i<records.length;i++){
                                 $this.task.push({
                                     value:records[i],
@@ -464,7 +465,7 @@
                                     type:0,
                                     confirm:"我知道了",
                                     hintTitle:"恭喜领取成功",
-                                    hintCont:"您已领取试玩任务成功，请尽快完成试玩任务"
+                                    hintCont:"您已领取任务任务成功，请尽快完成任务任务"
                                 });
                                 $this.task[index].submitStatus = 0;
                             }else{
@@ -524,7 +525,7 @@
                 this.taskModal.show = false;
             },
             /**
-             * 开始试玩
+             * 开始任务
              */
             startTry(){
                 let $this = this;

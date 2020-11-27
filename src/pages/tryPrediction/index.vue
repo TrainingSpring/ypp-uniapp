@@ -1,4 +1,4 @@
-<!--试玩预告-->
+<!--任务预告-->
 <template>
     <view class="try">
         <view class="search">

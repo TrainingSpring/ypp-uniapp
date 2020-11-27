@@ -15,7 +15,7 @@
             <view class="center">
                 <view class="top">1</view>
                 <view class="bottom" v-if="type === 0">
-                    试玩名额：{{data.taskNum - data.remainNum}}/{{data.taskNum}}
+                    任务名额：{{data.taskNum - data.remainNum}}/{{data.taskNum}}
                 </view>
                 <view v-if="type === 1">
                     {{data.gameName}}({{data.serverName}})
@@ -50,7 +50,7 @@
         >
             <view class="hint-msg-1" v-if="hint.type === 1">
                 <view class="title" style="padding-top:89px;">任务完成</view>
-                <view class="detail">提交审核领取试玩奖励！</view>
+                <view class="detail">提交审核领取任务奖励！</view>
             </view>
             <view class="hint-msg-0" v-if="hint.type !== 1">
                 <view class="title" style="padding-top:50px;">{{hint.hintTitle}}</view>
@@ -225,7 +225,7 @@
                                     type:0,
                                     confirm:"我知道了",
                                     hintTitle:"恭喜领取成功",
-                                    hintCont:"您已领取试玩任务成功，请尽快完成试玩任务"
+                                    hintCont:"您已领取任务任务成功，请尽快完成任务任务"
                                 });
                                 $this.$set($this.data,"submitStatus",0);
                                 $this.$emit("input",$this.data);
