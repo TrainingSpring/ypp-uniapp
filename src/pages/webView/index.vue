@@ -1,6 +1,6 @@
 <template>
     <view class="webview">
-        <web-view>
+        <web-view src="https://baidu.com">
 
         </web-view>
     </view>
@@ -11,16 +11,20 @@
         name: "webview",
         data(){
             return {
-                url:"#"
+                url:"https://baidu.com"
             }
         },
         onLoad(res){
             let url = res.url;
-            console.log("信息:",res);
+            this.url +=res.data;
+            console.log("信息:",res,this.url);
         }
     }
 </script>
 
 <style scoped>
-
+.webview{
+    width: 100%;
+    height:100%;
+}
 </style>
