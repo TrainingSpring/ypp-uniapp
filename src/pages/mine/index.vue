@@ -15,7 +15,7 @@
                     </view>
                     <view class="right">
                         <view class="nick">{{userInfo.nick}}</view>
-                        <navigator url="../balance/index" class="balance">余额(元)：{{userInfo.balance}}</navigator>
+                        <navigator url="../balance/index" class="balance">余额(元)：{{userInfo.balance}} <view class="cuIcon-right" style="float: right;"></view></navigator>
                         <!--                            <view class="recommend">了解任务游戏 <text class="cuIcon-playfill"></text></view>-->
                     </view>
                 </view>
@@ -490,7 +490,13 @@
                     font-size: 24upx;
                     padding: 0 40upx;
                     color: white;
-                    line-height: 50upx;
+                    line-height: 52upx;
+                    position: relative;
+                    .cuIcon-right{
+                        position: absolute;
+                        right: 10upx;
+                        top: calc((50% - 25upx)/2);
+                    }
                 }
             }
         }

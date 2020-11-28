@@ -8,6 +8,8 @@ function Tools() {
 }
 /** 格式化钱 */ 
 Tools.prototype.formatMoney = function(num:Number){
+	// @ts-ignore
+	num = parseFloat((num*100).toPrecision(12))/100;
 	var ts = num.toString(); // num to string -> ts
 	var ta = (ts.indexOf(".")!==-1)?ts.split('.'):[ts]; // num to array -> ta
 	if(ta.length>2){

@@ -114,6 +114,23 @@
 			}
 		},
         mounted(){
+		    let update = uni.getUpdateManager();
+            update.onCheckForUpdate(function (res) {
+                let hasUpdate = res.hasUpdate;
+            });
+            update.onUpdateReady(function (res) {
+                uni.showModal({
+                    title: '更新提示',
+                    content: '新版本已经准备好，是否重启应用？',
+                    success(res) {
+                        if (res.confirm) {
+                            // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+                            update.applyUpdate();
+                        }
+                    }
+                });
+
+            });
 		    this.init();
         },
         onShow(){
@@ -271,7 +288,7 @@
              */
             showDetail(data:Object){
                 uni.navigateTo({
-                    url:"../taskInfo/index?data="+JSON.stringify(data),
+                    url:"../webView/index?url=http://192.168.1.37:8080&data="+JSON.stringify(data),
                 });
             }
 		}

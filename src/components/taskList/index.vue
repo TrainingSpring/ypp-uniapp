@@ -26,7 +26,7 @@
                     +{{data.money||data.awardMoney}}元
                 </view>
                 <view class="bottom">
-                    <view class="btn" :class="data.submitStatus == -1?'bg-blue':data.submitStatus==0?'bg-green':'bg-grey'" @tap="submit(data,index)">{{data.submitStatus == -1?"立即领取":"立即提交"}}</view>
+                    <view class="btn" :class="data.submitStatus == -1?'bg-blue':data.submitStatus==0?'bg-green':'bg-grey'" @tap="submit(data,index)">{{data.submitStatus == -1?"立即领取":data.submitStatus == 0?"立即提交":data.submitStatus == 1?"审核中":data.submitStatus == 2?"成功":"失败"}}</view>
                     <!--<view>
                         {{item.endTime.split(":")[0]}}时后结束
                     </view>-->

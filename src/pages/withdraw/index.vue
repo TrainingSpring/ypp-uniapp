@@ -55,7 +55,7 @@
                 <view class="cu-bar bg-white justify-end">
                     <view class="content">
                         <view>提现到账金额</view>
-                        <view>￥ {{tools.formatMoney(withdraw.money * 0.97)}}</view>
+                        <view>￥ {{tools.formatMoney(withdraw.money * 0.93)}}</view>
                     </view>
                     <view class="action" @tap="hideModal">
                         <text class="cuIcon-close text-blue"></text>
@@ -68,7 +68,7 @@
                     </view>
                     <view class="li">
                         <view class="keys">个人所得税</view>
-                        <view class="val">{{parseFloat((tax*100).toPrecision(12))}}%(￥ {{tools.formatMoney((1-tax)*withdraw.money)}})</view>
+                        <view class="val">{{parseFloat((tax*100).toPrecision(12))}}%(￥ {{tools.formatMoney((tax)*withdraw.money)}})</view>
                     </view>
                     <view class="li">
                         <view>根据《中华人民共和国个人所得税法》, 我公司将代收个人偶然所得税.若有疑问,请<text class="connect text-blue">联系客服</text></view>
@@ -167,7 +167,7 @@
             console.log("获取银行卡")
         },
         mounted(){
-            this.withdraw.tempBank = this.bankList[0]
+            this.withdraw.tempBank = this.bankList[0];
             this.getBalance();
         },components:{
             card,
@@ -200,6 +200,7 @@
                         uni.hideLoading();
                         let data = res.data;
                         if (data.code === 200) {
+                            $this.getBalance()
                             $this.util.showInfo(1,data);
                         }else{
                             $this.util.showInfo(0,data);

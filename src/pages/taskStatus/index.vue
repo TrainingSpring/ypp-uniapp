@@ -18,7 +18,7 @@
                                 </view>
                             </view>
                             <view class="action" v-if="item.submitStatus === 0">
-                                <button class="cu-btn bg-blue round text-sm">立即提交</button>
+                                <button class="cu-btn bg-blue round text-sm" @tap="submitTask(item)">立即提交</button>
                             </view>
                         </view>
                     </view>
@@ -67,6 +67,45 @@
             this.getTaskList(1,this.current);
         },
         methods:{
+            /**
+             * 提交任务
+             * */
+            submitTask(item){
+                let $this = this;
+                let index = this.current;
+                uni.showModal({
+                    title:"确认提交?",
+                    confirmText:"确认",
+                    success(result){
+                        let confirm = result.confirm;
+                        if (confirm) {
+                            uni.showLoading({
+                                title:"请稍后..."
+                            });
+                            let uid = uni.getStorageSync("loginInfo").uid;
+                            uni.request({
+                                url:$this.util.getApiUrl("/yppTask/submit_task"),
+                                data:{
+                                    uid,
+                                    taskId:item.taskId
+                                },
+                                method:"POST",
+                                success(res){
+                                    if (res.data.code === 200) {
+                                        uni.hideLoading();
+                                        $this.$set($this.list[index],"submitStatus",1);
+                                        $this.util.showInfo(1,res.data);
+                                    }else{
+                                        $this.util.showInfo(0,res.data);
+                                    }
+                                }
+                            })
+
+                        }
+                    }
+                })
+
+            },
             /**
              * @desc 底部加载下一页
              **/
